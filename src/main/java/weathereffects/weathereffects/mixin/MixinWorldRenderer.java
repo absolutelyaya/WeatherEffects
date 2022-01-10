@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import weathereffects.weathereffects.WeatherEffects;
 
 import java.util.Random;
@@ -178,49 +177,40 @@ public abstract class MixinWorldRenderer
 	
 	@Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V",
 			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V",
-					shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	public void onRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double d, double e, double f, CallbackInfo ci, float g, float h, float i, double j, double k, double l, double m, double n, float o, float p, float q)
+					shift = At.Shift.AFTER))
+	public void onRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double d, double e, double f, CallbackInfo ci)
 	{
 		float gradient = world.getRainGradient(tickDelta);
 		float thunderGradient = world.getThunderGradient(tickDelta);
 		
+		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		if(thunderGradient > 0f && thunderGradient < 1f)
 		{
-			RenderSystem.setShaderColor(1f, 1f, 1f, thunderGradient);
 			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/thunder_clouds.png"));
-			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, false);
-			RenderSystem.setShaderColor(1f, 1f, 1f, 1f - thunderGradient);
-			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID, "textures/environment/rain_clouds.png"));
-			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, true);
-			ci.cancel();
 		}
 		else if(gradient > 0f && gradient < 1f)
 		{
-			RenderSystem.setShaderColor(1f, 1f, 1f, gradient);
-			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/rain_clouds.png"));
-			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, false);
-			RenderSystem.setShaderColor(1f, 1f, 1f, 1f - gradient);
-			RenderSystem.setShaderTexture(0, new Identifier("textures/environment/clouds.png"));
-			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, true);
-			ci.cancel();
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/rain_clouds" + (int)(gradient * 3) + ".png"));
 		}
-		else if(gradient > 0)
+		else if(gradient > 0f)
 		{
 			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,
-					thunderGradient > 0 ? "textures/environment/thunder_clouds.png" : "textures/environment/rain_clouds.png"));
-			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, true);
-			ci.cancel();
+					thunderGradient > 0 ? "textures/environment/thunder_clouds.png" : "textures/environment/rain_clouds2.png"));
+		}
+		else
+		{
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/clouds.png"));
 		}
 	}
 	
 	@Unique
-	void actuallyRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float o, float p, float q, boolean resetRender)
+	void actuallyRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float o, float p, float q)
 	{
 		BackgroundRenderer.setFogBlack();
 		matrices.push();
 		matrices.scale(12.0f, 1.0f, 12.0f);
 		matrices.translate(-o, p, -q);
-		if (this.cloudsBuffer != null) {
+		if (cloudsBuffer != null) {
 			for (int u = this.lastCloudsRenderMode == CloudRenderMode.FANCY ? 0 : 1; u < 2; ++u)
 			{
 				if (u == 0)
@@ -232,15 +222,12 @@ public abstract class MixinWorldRenderer
 					RenderSystem.colorMask(true, true, true, true);
 				}
 				Shader shader = RenderSystem.getShader();
-				this.cloudsBuffer.setShader(matrices.peek().getPositionMatrix(), projectionMatrix, shader);
+				cloudsBuffer.setShader(matrices.peek().getPositionMatrix(), projectionMatrix, shader);
 			}
 		}
 		matrices.pop();
-		if(resetRender)
-		{
-			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-			RenderSystem.enableCull();
-			RenderSystem.disableBlend();
-		}
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+		RenderSystem.enableCull();
+		RenderSystem.disableBlend();
 	}
 }
