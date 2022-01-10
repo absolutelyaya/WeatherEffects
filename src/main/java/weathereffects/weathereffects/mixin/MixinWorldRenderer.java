@@ -1,0 +1,243 @@
+package weathereffects.weathereffects.mixin;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.VertexBuffer;
+import net.minecraft.client.option.CloudRenderMode;
+import net.minecraft.client.render.*;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ItemStackParticleEffect;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.*;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import weathereffects.weathereffects.WeatherEffects;
+
+import java.util.Random;
+
+@Mixin(WorldRenderer.class)
+public abstract class MixinWorldRenderer
+{
+	@Shadow private ClientWorld world;
+	@Shadow private int field_20793;
+	@Shadow private VertexBuffer cloudsBuffer;
+	@Shadow private CloudRenderMode lastCloudsRenderMode;
+	
+	@Shadow @Final private MinecraftClient client;
+	
+	@Unique private float fogDistance, fogEndDistance = -1;
+	@Unique private boolean isRaining;
+	
+	@Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
+	public void onRenderWeather(LightmapTextureManager manager, float delta, double x, double y, double z, CallbackInfo ci)
+	{
+		if((world.getRainGradient(delta) > 0 || world.getThunderGradient(delta) > 0) && !(client.isPaused() && world.isClient))
+		{
+			double minHeight = y + 15;
+			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
+			Random r = new Random();
+			
+			for (int i = 0; i < world.getRainGradient(delta) * 10; i++)
+			{
+				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
+						Math.min(minHeight, maxHeight) + (r.nextDouble() - 0.5) * 3,
+						(r.nextDouble() - 0.5) * 30);
+				if(world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int)(x + pos.x), (int)(z + pos.z)) < pos.y)
+				{
+					switch(world.getBiome(new BlockPos(pos.add(new Vec3d(x, 0, z)))).getPrecipitation())
+					{
+						case RAIN -> world.addParticle(WeatherEffects.RAIN_DROP, x + pos.x, pos.y, z + pos.z, 0, 0, 0);
+						case SNOW -> world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y, z + pos.z * 3, 0, 0, 0);
+						default ->
+								{
+									if(world.getBiome(new BlockPos(pos).add(new Vec3i(x, 0, z))).getCategory().equals(Biome.Category.DESERT))
+									{
+										int top = world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int)(x + pos.x), (int)(z + pos.z));
+										int particle = r.nextInt(2);
+										BlockState b = world.getBlockState(new BlockPos(x + pos.x, top, z + pos.z).down());
+										if(b.isOf(Blocks.SAND) || b.isOf(Blocks.RED_SAND))
+										{
+											if(particle == 0)
+												world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
+														x + pos.x, top + 0.1, z + pos.z, 0.2, r.nextFloat() / 5, 0.2);
+											else
+												world.addParticle(new BlockStateParticleEffect(ParticleTypes.FALLING_DUST, b),
+														x + pos.x, top + r.nextInt(5), z + pos.z, 0.2, 0.1, 0.2);
+										}
+									}
+								}
+					}
+				}
+			}
+		}
+		ci.cancel();
+	}
+	
+	@Inject(method = "render", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/render/BackgroundRenderer;applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZ)V",
+			shift = At.Shift.AFTER))
+	public void onRenderFog(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, CallbackInfo ci)
+	{
+		Vec3d pos = camera.getPos();
+		applyFogSettings(world.getBiome(new BlockPos(pos.x, pos.y, pos.z)).getCategory(), camera, tickDelta, gameRenderer);
+	}
+	
+	@Unique
+	public void applyFogSettings(Biome.Category biomeCategory, Camera camera, float tickDelta, GameRenderer gameRenderer)
+	{
+		if(fogDistance == -1)
+			fogDistance = RenderSystem.getShaderFogStart();
+		if(fogEndDistance == -1)
+			fogEndDistance = RenderSystem.getShaderFogEnd();
+		float viewDistance = gameRenderer.getViewDistance();
+		CameraSubmersionType cameraSubmersionType = camera.getSubmersionType();
+		Entity entity = camera.getFocusedEntity();
+		if(cameraSubmersionType.equals(CameraSubmersionType.NONE) &&
+				   (entity instanceof LivingEntity && !((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS)))
+		{
+			float g = world.getRainGradient(tickDelta);
+			if (g > 0f && !(g < 1f && isRaining))
+			{
+				if(g == 1)
+					isRaining = true;
+				switch(biomeCategory)
+				{
+					case DESERT -> {
+						fogDistance = MathHelper.lerp(0.01f, fogDistance, 16f);
+						fogEndDistance = MathHelper.lerp(0.01f, fogEndDistance, 64f);
+						RenderSystem.setShaderFogStart(fogDistance);
+						RenderSystem.setShaderFogEnd(fogEndDistance);
+						return;
+					}
+					case SWAMP -> {
+						fogDistance = MathHelper.lerp(0.01f, fogDistance, 4f);
+						fogEndDistance = MathHelper.lerp(0.01f, fogEndDistance, 96f);
+						RenderSystem.setShaderFogStart(fogDistance);
+						RenderSystem.setShaderFogEnd(fogEndDistance);
+						return;
+					}
+				}
+			}
+			else if(g == 0 && isRaining)
+				isRaining = false;
+			float b = MathHelper.clamp(viewDistance / 10.0f, 4.0f, 64.0f);
+			fogDistance = MathHelper.lerp(0.005f, fogDistance, Math.max(viewDistance, 32.0f) - b);
+			fogEndDistance = MathHelper.lerp(0.005f, fogEndDistance, Math.max(viewDistance, 32.0f));
+			RenderSystem.setShaderFogStart(fogDistance);
+			RenderSystem.setShaderFogEnd(fogEndDistance);
+		}
+	}
+	
+	@Inject(method = "tickRainSplashing", at = @At("HEAD"), cancellable = true)
+	public void onTickRainSplashing(Camera camera, CallbackInfo ci)
+	{
+		BlockPos blockPos = new BlockPos(camera.getPos());
+		if(world.isRaining() && !(client.isPaused() && world.isClient))
+		{
+			Random random = new Random();
+			int k = random.nextInt(21) - 10;
+			int l = random.nextInt(21) - 10;
+			BlockPos blockPos2 = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, blockPos.add(k, 0, l).down());
+			if (blockPos2 != null && random.nextInt(3) < this.field_20793++ &&
+						world.getBiome(blockPos2).getPrecipitation().equals(Biome.Precipitation.RAIN))
+			{
+				this.field_20793 = 0;
+				if (blockPos2.getY() > blockPos.getY() + 1 && world.getTopPosition(Heightmap.Type.WORLD_SURFACE,
+						blockPos).getY() > MathHelper.floor((float) blockPos.getY()))
+				{
+					world.playSound(blockPos2, SoundEvents.WEATHER_RAIN_ABOVE, SoundCategory.WEATHER, 0.1F, 0.5F, false);
+				} else
+				{
+					world.playSound(blockPos2, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.2F, 1.0F, false);
+				}
+			}
+			ci.cancel();
+		}
+	}
+	
+	@Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V",
+			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderTexture(ILnet/minecraft/util/Identifier;)V",
+					shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	public void onRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double d, double e, double f, CallbackInfo ci, float g, float h, float i, double j, double k, double l, double m, double n, float o, float p, float q)
+	{
+		float gradient = world.getRainGradient(tickDelta);
+		float thunderGradient = world.getThunderGradient(tickDelta);
+		
+		if(thunderGradient > 0f && thunderGradient < 1f)
+		{
+			RenderSystem.setShaderColor(1f, 1f, 1f, thunderGradient);
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/thunder_clouds.png"));
+			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, false);
+			RenderSystem.setShaderColor(1f, 1f, 1f, 1f - thunderGradient);
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID, "textures/environment/rain_clouds.png"));
+			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, true);
+			ci.cancel();
+		}
+		else if(gradient > 0f && gradient < 1f)
+		{
+			RenderSystem.setShaderColor(1f, 1f, 1f, gradient);
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/rain_clouds.png"));
+			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, false);
+			RenderSystem.setShaderColor(1f, 1f, 1f, 1f - gradient);
+			RenderSystem.setShaderTexture(0, new Identifier("textures/environment/clouds.png"));
+			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, true);
+			ci.cancel();
+		}
+		else if(gradient > 0)
+		{
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,
+					thunderGradient > 0 ? "textures/environment/thunder_clouds.png" : "textures/environment/rain_clouds.png"));
+			actuallyRenderClouds(matrices, projectionMatrix, o, p, q, true);
+			ci.cancel();
+		}
+	}
+	
+	@Unique
+	void actuallyRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float o, float p, float q, boolean resetRender)
+	{
+		BackgroundRenderer.setFogBlack();
+		matrices.push();
+		matrices.scale(12.0f, 1.0f, 12.0f);
+		matrices.translate(-o, p, -q);
+		if (this.cloudsBuffer != null) {
+			for (int u = this.lastCloudsRenderMode == CloudRenderMode.FANCY ? 0 : 1; u < 2; ++u)
+			{
+				if (u == 0)
+				{
+					RenderSystem.colorMask(false, false, false, false);
+				}
+				else
+				{
+					RenderSystem.colorMask(true, true, true, true);
+				}
+				Shader shader = RenderSystem.getShader();
+				this.cloudsBuffer.setShader(matrices.peek().getPositionMatrix(), projectionMatrix, shader);
+			}
+		}
+		matrices.pop();
+		if(resetRender)
+		{
+			RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+			RenderSystem.enableCull();
+			RenderSystem.disableBlend();
+		}
+	}
+}
