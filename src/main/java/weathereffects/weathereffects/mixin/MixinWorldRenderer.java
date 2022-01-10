@@ -19,6 +19,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Final;
@@ -92,10 +93,12 @@ public abstract class MixinWorldRenderer
 	}
 	
 	@Inject(method = "render", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/render/BackgroundRenderer;applyFog(Lnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/BackgroundRenderer$FogType;FZ)V",
+			target = "Lnet/minecraft/client/render/WorldRenderer;updateChunks(Lnet/minecraft/client/render/Camera;)V",
 			shift = At.Shift.AFTER))
 	public void onRenderFog(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, CallbackInfo ci)
 	{
+		Profiler profiler = this.world.getProfiler();
+		profiler.swap("fog");
 		Vec3d pos = camera.getPos();
 		applyFogSettings(world.getBiome(new BlockPos(pos.x, pos.y, pos.z)).getCategory(), camera, tickDelta, gameRenderer);
 	}

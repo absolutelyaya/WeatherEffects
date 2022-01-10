@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "weather-effects",
-  "version": "1.2-SNAPSHOT",
+  "version": "0.3-SNAPSHOT",
   "name": "Weather Effects",
   "description": "Replaces Weather with configurable particle effects.",
   "authors": [
