@@ -4,8 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
@@ -38,8 +36,6 @@ public abstract class MixinWorldRenderer
 {
 	@Shadow private ClientWorld world;
 	@Shadow private int field_20793;
-	@Shadow private VertexBuffer cloudsBuffer;
-	@Shadow private CloudRenderMode lastCloudsRenderMode;
 	
 	@Shadow @Final private MinecraftClient client;
 	
@@ -55,7 +51,7 @@ public abstract class MixinWorldRenderer
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
 			
-			for (int i = 0; i < world.getRainGradient(delta) * 10; i++)
+			for (int i = 0; i < world.getRainGradient(delta) * 10 * delta; i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
 						Math.min(minHeight, maxHeight) + (r.nextDouble() - 0.5) * 3,
@@ -105,6 +101,7 @@ public abstract class MixinWorldRenderer
 	@Unique
 	public void applyFogSettings(Biome.Category biomeCategory, Camera camera, float tickDelta, GameRenderer gameRenderer)
 	{
+		float fogSpeed = 0.01f; ///TODO make option
 		if(fogDistance == -1)
 			fogDistance = RenderSystem.getShaderFogStart();
 		if(fogEndDistance == -1)
@@ -123,15 +120,15 @@ public abstract class MixinWorldRenderer
 				switch(biomeCategory)
 				{
 					case DESERT -> {
-						fogDistance = MathHelper.lerp(0.01f, fogDistance, 16f);
-						fogEndDistance = MathHelper.lerp(0.01f, fogEndDistance, 64f);
+						fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, 16f);
+						fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, 64f);
 						RenderSystem.setShaderFogStart(fogDistance);
 						RenderSystem.setShaderFogEnd(fogEndDistance);
 						return;
 					}
 					case SWAMP -> {
-						fogDistance = MathHelper.lerp(0.01f, fogDistance, 4f);
-						fogEndDistance = MathHelper.lerp(0.01f, fogEndDistance, 96f);
+						fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, 4f);
+						fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, 96f);
 						RenderSystem.setShaderFogStart(fogDistance);
 						RenderSystem.setShaderFogEnd(fogEndDistance);
 						return;
@@ -141,8 +138,8 @@ public abstract class MixinWorldRenderer
 			else if(g == 0 && isRaining)
 				isRaining = false;
 			float b = MathHelper.clamp(viewDistance / 10.0f, 4.0f, 64.0f);
-			fogDistance = MathHelper.lerp(0.005f, fogDistance, Math.max(viewDistance, 32.0f) - b);
-			fogEndDistance = MathHelper.lerp(0.005f, fogEndDistance, Math.max(viewDistance, 32.0f));
+			fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, Math.max(viewDistance, 32.0f) - b);
+			fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, Math.max(viewDistance, 32.0f));
 			RenderSystem.setShaderFogStart(fogDistance);
 			RenderSystem.setShaderFogEnd(fogEndDistance);
 		}
@@ -201,33 +198,5 @@ public abstract class MixinWorldRenderer
 		{
 			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/clouds.png"));
 		}
-	}
-	
-	@Unique
-	void actuallyRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float o, float p, float q)
-	{
-		BackgroundRenderer.setFogBlack();
-		matrices.push();
-		matrices.scale(12.0f, 1.0f, 12.0f);
-		matrices.translate(-o, p, -q);
-		if (cloudsBuffer != null) {
-			for (int u = this.lastCloudsRenderMode == CloudRenderMode.FANCY ? 0 : 1; u < 2; ++u)
-			{
-				if (u == 0)
-				{
-					RenderSystem.colorMask(false, false, false, false);
-				}
-				else
-				{
-					RenderSystem.colorMask(true, true, true, true);
-				}
-				Shader shader = RenderSystem.getShader();
-				cloudsBuffer.setShader(matrices.peek().getPositionMatrix(), projectionMatrix, shader);
-			}
-		}
-		matrices.pop();
-		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-		RenderSystem.enableCull();
-		RenderSystem.disableBlend();
 	}
 }

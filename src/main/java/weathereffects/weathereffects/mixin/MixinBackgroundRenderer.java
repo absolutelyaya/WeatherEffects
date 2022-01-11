@@ -6,8 +6,6 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
-import org.lwjgl.system.CallbackI;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,12 +20,14 @@ public class MixinBackgroundRenderer
 	@Shadow private static float green;
 	@Shadow private static float blue;
 	
-	@Unique private static Vec3d color, goalColor;
+	@Unique private static Vec3d color;
 	
 	@Inject(method = "render", at = @At("TAIL"))
 	private static void onRender(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci)
 	{
+		float colorFadeSpeed = 0.01f; ///TODO make option
 		float g;
+		Vec3d goalColor;
 		if((g = world.getRainGradient(tickDelta)) > 0)
 		{
 			if(color == null)
@@ -39,7 +39,7 @@ public class MixinBackgroundRenderer
 				case SWAMP -> goalColor = new Vec3d(1f, 1f, 1f);
 				default -> goalColor = new Vec3d(0.7f, 0.82f, 1f);
 			}
-			color = color.lerp(goalColor.multiply(g).add(new Vec3d(1 - g, 1 - g, 1 - g)), 0.06);
+			color = color.lerp(goalColor.multiply(g).add(new Vec3d(1 - g, 1 - g, 1 - g)), colorFadeSpeed * tickDelta);
 			red *= color.x;
 			green *= color.y;
 			blue *= color.z;
