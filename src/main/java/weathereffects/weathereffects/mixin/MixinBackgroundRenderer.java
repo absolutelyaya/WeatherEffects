@@ -36,6 +36,7 @@ public class MixinBackgroundRenderer
 			switch(world.getBiome(new BlockPos(pos)).getCategory())
 			{
 				case DESERT -> goalColor = new Vec3d(2f, 1.6f, 0.8f);
+				case MESA -> goalColor = new Vec3d(1.36f, 0.8f, 0.52f);
 				case SWAMP -> goalColor = new Vec3d(1f, 1f, 1f);
 				default -> goalColor = new Vec3d(0.7f, 0.82f, 1f);
 			}

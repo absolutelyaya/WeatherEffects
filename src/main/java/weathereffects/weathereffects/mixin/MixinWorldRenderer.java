@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import weathereffects.weathereffects.WeatherEffects;
+import weathereffects.weathereffects.particles.WindDustParticle;
 
 import java.util.Random;
 
@@ -64,18 +65,19 @@ public abstract class MixinWorldRenderer
 						case SNOW -> world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y, z + pos.z * 3, 0, 0, 0);
 						default ->
 								{
-									if(world.getBiome(new BlockPos(pos).add(new Vec3i(x, 0, z))).getCategory().equals(Biome.Category.DESERT))
+									Biome.Category biome = world.getBiome(new BlockPos(pos).add(new Vec3i(x, 0, z))).getCategory();
+									if(biome.equals(Biome.Category.DESERT) || biome.equals(Biome.Category.MESA))
 									{
 										int top = world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int)(x + pos.x), (int)(z + pos.z));
-										int particle = r.nextInt(2);
+										float particle = r.nextFloat();
 										BlockState b = world.getBlockState(new BlockPos(x + pos.x, top, z + pos.z).down());
 										if(b.isOf(Blocks.SAND) || b.isOf(Blocks.RED_SAND))
 										{
-											if(particle == 0)
+											if(particle < 0.75f)
 												world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
 														x + pos.x, top + 0.1, z + pos.z, 0.2, r.nextFloat() / 5, 0.2);
 											else
-												world.addParticle(new BlockStateParticleEffect(ParticleTypes.FALLING_DUST, b),
+												world.addParticle(WeatherEffects.WIND_DUST,
 														x + pos.x, top + r.nextInt(5), z + pos.z, 0.2, 0.1, 0.2);
 										}
 									}
@@ -119,7 +121,7 @@ public abstract class MixinWorldRenderer
 					isRaining = true;
 				switch(biomeCategory)
 				{
-					case DESERT -> {
+					case DESERT, MESA -> {
 						fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, 16f);
 						fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, 64f);
 						RenderSystem.setShaderFogStart(fogDistance);

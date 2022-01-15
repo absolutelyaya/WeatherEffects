@@ -15,6 +15,7 @@ public class WeatherEffects implements ModInitializer
 	public static final DefaultParticleType RAIN_DROP = FabricParticleTypes.simple();
 	public static final DefaultParticleType RAIN_RIPPLE = FabricParticleTypes.simple();
 	public static final DefaultParticleType SNOW_FLAKE = FabricParticleTypes.simple();
+	public static final DefaultParticleType WIND_DUST = FabricParticleTypes.simple();
 
 	public static Configuration CONFIG;
 	
@@ -24,6 +25,7 @@ public class WeatherEffects implements ModInitializer
 		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "raindrop"), RAIN_DROP);
 		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "rainripple"), RAIN_RIPPLE);
 		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "snowflake"), SNOW_FLAKE);
+		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "wind_dust"), WIND_DUST);
 
 		AutoConfig.register(Configuration.class, GsonConfigSerializer::new);
 		WeatherEffects.CONFIG = AutoConfig.getConfigHolder(Configuration.class).getConfig();

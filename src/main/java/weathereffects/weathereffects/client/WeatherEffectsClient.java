@@ -11,6 +11,7 @@ import weathereffects.weathereffects.WeatherEffects;
 import weathereffects.weathereffects.particles.RainDropParticle;
 import weathereffects.weathereffects.particles.RainRippleParticle;
 import weathereffects.weathereffects.particles.SnowflakeParticle;
+import weathereffects.weathereffects.particles.WindDustParticle;
 
 @Environment(EnvType.CLIENT)
 public class WeatherEffectsClient implements ClientModInitializer
@@ -36,5 +37,6 @@ public class WeatherEffectsClient implements ClientModInitializer
 		registry.register(WeatherEffects.RAIN_DROP, RainDropParticle.RainDropFactory::new);
 		registry.register(WeatherEffects.RAIN_RIPPLE, RainRippleParticle.RainRippleFactory::new);
 		registry.register(WeatherEffects.SNOW_FLAKE, SnowflakeParticle.SnowflakeParticleFactory::new);
+		registry.register(WeatherEffects.WIND_DUST, WindDustParticle.WindDustParticleFactory::new);
 	}
 }
