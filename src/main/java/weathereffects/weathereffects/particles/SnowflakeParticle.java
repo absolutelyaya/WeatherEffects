@@ -9,9 +9,9 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.noise.PerlinNoiseSampler;
-import net.minecraft.world.gen.random.AtomicSimpleRandom;
 import org.jetbrains.annotations.Nullable;
 import weathereffects.weathereffects.WeatherEffects;
 
@@ -20,14 +20,13 @@ import java.util.Random;
 public class SnowflakeParticle extends SpriteBillboardParticle
 {
 	float groundTime, maxGroundTime, rotSpeed, startScale;
-	double windStrength = 1.0;
-	PerlinNoiseSampler perlinNoise;
+	double windStrength = 0.4f, windChangeSpeed = 1f, windChangeInterval = 1f;
 	float meltSpeed = 0.5f;
+	Vec2f wind = new Vec2f(0, 0);
 	
 	protected SnowflakeParticle(ClientWorld world, double x, double y, double z)
 	{
 		super(world, x, y, z);
-		perlinNoise = new PerlinNoiseSampler(new AtomicSimpleRandom(System.currentTimeMillis()));
 		gravityStrength = 0.1f;
 		startScale = scale;
 	}
@@ -78,8 +77,13 @@ public class SnowflakeParticle extends SpriteBillboardParticle
 	
 	void wind()
 	{
-		velocityX += (perlinNoise.sample(x / 10, y, z / 10) * windStrength) / 42.069;
-		velocityZ += (perlinNoise.sample((x + 30) / 10, y, (z + 30) / 10) * windStrength) / 42.069;
+		if(age % 20 * windChangeInterval == 1)
+		{
+			wind = new Vec2f((random.nextFloat() - 0.5f) * 2f, (random.nextFloat() - 0.5f) * 2f);
+		}
+		velocityX = MathHelper.lerp(0.02D * windChangeSpeed, velocityX, wind.x * windStrength);
+		velocityZ = MathHelper.lerp(0.02D * windChangeSpeed, velocityZ, wind.y * windStrength);
+		
 	}
 	
 	@Override
