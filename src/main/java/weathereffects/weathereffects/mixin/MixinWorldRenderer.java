@@ -48,10 +48,16 @@ public abstract class MixinWorldRenderer
 	{
 		if((world.getRainGradient(delta) > 0 || world.getThunderGradient(delta) > 0) && !(client.isPaused() && world.isClient))
 		{
+			if(client.player != null)
+			{
+				Vec3d playerVelocity = client.player.getVelocity().multiply(30f, 5f, 30f);
+				x += playerVelocity.x;
+				y += playerVelocity.y;
+				z += playerVelocity.z;
+			}
 			double minHeight = y + 15;
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
-			
 			for (int i = 0; i < world.getRainGradient(delta) * 10 * delta; i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
@@ -62,7 +68,8 @@ public abstract class MixinWorldRenderer
 					switch(world.getBiome(new BlockPos(pos.add(new Vec3d(x, 0, z)))).getPrecipitation())
 					{
 						case RAIN -> world.addParticle(WeatherEffects.RAIN_DROP, x + pos.x, pos.y, z + pos.z, 0, 0, 0);
-						case SNOW -> world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y, z + pos.z * 3, 0, 0, 0);
+						case SNOW -> world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y - r.nextFloat() * 10f,
+								z + pos.z * 3, 0, 0, 0);
 						default ->
 								{
 									Biome.Category biome = world.getBiome(new BlockPos(pos).add(new Vec3i(x, 0, z))).getCategory();
