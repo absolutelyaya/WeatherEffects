@@ -1,13 +1,11 @@
 package weathereffects.weathereffects;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import weathereffects.weathereffects.config.Configuration;
+import weathereffects.weathereffects.settings.SettingsManager;
 
 public class WeatherEffects implements ModInitializer
 {
@@ -16,8 +14,6 @@ public class WeatherEffects implements ModInitializer
 	public static final DefaultParticleType RAIN_RIPPLE = FabricParticleTypes.simple();
 	public static final DefaultParticleType SNOW_FLAKE = FabricParticleTypes.simple();
 	public static final DefaultParticleType WIND_DUST = FabricParticleTypes.simple();
-
-	public static Configuration CONFIG;
 	
 	@Override
 	public void onInitialize()
@@ -26,8 +22,7 @@ public class WeatherEffects implements ModInitializer
 		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "rainripple"), RAIN_RIPPLE);
 		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "snowflake"), SNOW_FLAKE);
 		Registry.register(Registry.PARTICLE_TYPE, new Identifier(WeatherEffects.MODID, "wind_dust"), WIND_DUST);
-
-		AutoConfig.register(Configuration.class, GsonConfigSerializer::new);
-		WeatherEffects.CONFIG = AutoConfig.getConfigHolder(Configuration.class).getConfig();
+		
+		SettingsManager.load();
 	}
 }

@@ -18,7 +18,9 @@
     "main": [
       "weathereffects.weathereffects.WeatherEffects"
     ],
-    "modmenu": ["weathereffects.weathereffects.config.ModMenu"]
+    "modmenu": [
+      "weathereffects.weathereffects.settings.ModMenu"
+    ]
   },
   "mixins": [
     "weather-effects.mixins.json"
