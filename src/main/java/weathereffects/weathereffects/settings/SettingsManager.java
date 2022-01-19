@@ -66,11 +66,12 @@ public class SettingsManager
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 			for(Settings.Category cat : Settings.Category.values())
 			{
-				for (AbstractSetting setting : Settings.SETTINGS.get(cat))
-				{
-					bw.write(setting.serialize());
-					bw.newLine();
-				}
+				if(Settings.SETTINGS.get(cat) != null)
+					for (AbstractSetting setting : Settings.SETTINGS.get(cat))
+					{
+						bw.write(setting.serialize());
+						bw.newLine();
+					}
 			}
 			bw.close();
 		}

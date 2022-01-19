@@ -3,7 +3,16 @@ package weathereffects.weathereffects.screens.settings;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.DoubleOptionSliderWidget;
+import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.client.option.DoubleOption;
+import net.minecraft.client.option.Option;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import weathereffects.weathereffects.settings.Settings;
+import weathereffects.weathereffects.settings.SliderSetting;
+
+import java.util.Set;
 
 public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 {
@@ -18,6 +27,11 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		super.init();
 		if(client == null)
 			return;
+		SliderSetting particleAmount = Settings.PARTICLE_AMOUNT;
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 - 6, 150, 20, Text.of("Preset: TBA"), button -> {})).active = false;
+		this.addDrawableChild(new DoubleOptionSliderWidget(client.options, this.width / 2 + 5, this.height / 6 - 6, 150, 20,
+				(DoubleOption)particleAmount.asOption(), null));
+		
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 42, 150, 20,
 				new TranslatableText("screen.weatherEffects.options.rain.title").append("..."), button -> this.client.setScreen(null)));
 		this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 42, 150, 20,

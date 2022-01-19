@@ -11,13 +11,15 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class Settings
 {
-	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
+	//TODO: Add presets
+	//General
+	public static final SliderSetting PARTICLE_AMOUNT = new SliderSetting("general.particle-amount", 1.0, 0.01, 1.0, 0.001f);
 	
-	//TODO add setting categories
+	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	
 	static
 	{
-	
+		SETTINGS.put(Category.GENERAL, List.of(PARTICLE_AMOUNT));
 	}
 	
 	public static Option[] getAsOptions(Category category)

@@ -1,5 +1,7 @@
 {
   "screen.weatherEffects.options.main.title": "Weather Effects Mod Options",
+  "setting.weathereffects.general.particle-amount": "Particle Amount:",
+
   "screen.weatherEffects.options.rain.title": "Rain Options",
   "screen.weatherEffects.options.snow.title": "Snow Options",
   "screen.weatherEffects.options.sandstorm.title": "Sand Storm Options",

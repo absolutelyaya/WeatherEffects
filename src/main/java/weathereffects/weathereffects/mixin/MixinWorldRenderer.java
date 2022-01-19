@@ -29,6 +29,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import weathereffects.weathereffects.WeatherEffects;
 import weathereffects.weathereffects.particles.WindDustParticle;
+import weathereffects.weathereffects.settings.Settings;
+import weathereffects.weathereffects.settings.SettingsManager;
+import weathereffects.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
 
@@ -58,7 +61,7 @@ public abstract class MixinWorldRenderer
 			double minHeight = y + 15;
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
-			for (int i = 0; i < world.getRainGradient(delta) * 10 * delta; i++)
+			for (int i = 0; i < world.getRainGradient(delta) * 10 * delta * SettingsStorage.getDouble("general.particle-amount"); i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
 						Math.min(minHeight, maxHeight) + (r.nextDouble() - 0.5) * 3,
