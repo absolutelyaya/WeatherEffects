@@ -64,10 +64,13 @@ public class SettingsManager
 		try
 		{
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-			for (AbstractSetting setting : Settings.SETTINGS)
+			for(Settings.Category cat : Settings.Category.values())
 			{
-				bw.write(setting.serialize());
-				bw.newLine();
+				for (AbstractSetting setting : Settings.SETTINGS.get(cat))
+				{
+					bw.write(setting.serialize());
+					bw.newLine();
+				}
 			}
 			bw.close();
 		}
