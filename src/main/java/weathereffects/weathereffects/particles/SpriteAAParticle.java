@@ -13,10 +13,13 @@ public abstract class SpriteAAParticle extends SpriteBillboardParticle
 {
 	protected final SpriteProvider spriteProvider;
 	
+	protected Vec3f scale;
+	
 	protected SpriteAAParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider)
 	{
 		super(world, x, y, z);
-		this.scale = 0.1F * (this.random.nextFloat() * 0.5F + 0.5F) * 2.0F;
+		float s = 0.1F * (this.random.nextFloat() * 0.5F + 0.5F) * 2.0F;
+		this.scale = new Vec3f(s, s, s);
 		this.spriteProvider = spriteProvider;
 	}
 	
@@ -39,7 +42,7 @@ public abstract class SpriteAAParticle extends SpriteBillboardParticle
 		{
 			Vec3f vec3f = vec3fs[k];
 			vec3f.rotate(Vec3f.POSITIVE_Y.getDegreesQuaternion((float)Math.toDegrees(Math.atan2(dir.x, dir.z))));
-			vec3f.scale(scale);
+			vec3f.multiplyComponentwise(scale.getX(), scale.getY(), scale.getZ());
 			vec3f.add(f, g, h);
 		}
 		

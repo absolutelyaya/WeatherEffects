@@ -10,7 +10,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ItemStackParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
@@ -28,9 +27,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import weathereffects.weathereffects.WeatherEffects;
-import weathereffects.weathereffects.particles.WindDustParticle;
-import weathereffects.weathereffects.settings.Settings;
-import weathereffects.weathereffects.settings.SettingsManager;
 import weathereffects.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
@@ -61,7 +57,7 @@ public abstract class MixinWorldRenderer
 			double minHeight = y + 15;
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
-			for (int i = 0; i < world.getRainGradient(delta) * 10 * delta * SettingsStorage.getDouble("general.particle-amount"); i++)
+			for (int i = 0; i < world.getRainGradient(delta) * SettingsStorage.getDouble("general.particle-amount") * delta; i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
 						Math.min(minHeight, maxHeight) + (r.nextDouble() - 0.5) * 3,
@@ -70,7 +66,10 @@ public abstract class MixinWorldRenderer
 				{
 					switch(world.getBiome(new BlockPos(pos.add(new Vec3d(x, 0, z)))).getPrecipitation())
 					{
-						case RAIN -> world.addParticle(WeatherEffects.RAIN_DROP, x + pos.x, pos.y, z + pos.z, 0, 0, 0);
+						case RAIN -> {
+							if(SettingsStorage.getBoolean("rain.enabled"))
+								world.addParticle(WeatherEffects.RAIN_DROP, x + pos.x, pos.y, z + pos.z, 0, 0, 0);
+						}
 						case SNOW -> world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y - r.nextFloat() * 10f,
 								z + pos.z * 3, 0, 0, 0);
 						default ->
@@ -161,7 +160,7 @@ public abstract class MixinWorldRenderer
 	public void onTickRainSplashing(Camera camera, CallbackInfo ci)
 	{
 		BlockPos blockPos = new BlockPos(camera.getPos());
-		if(world.isRaining() && !(client.isPaused() && world.isClient))
+		if(world.isRaining() && !(client.isPaused() && world.isClient) && SettingsStorage.getBoolean("rain.enabled"))
 		{
 			Random random = new Random();
 			int k = random.nextInt(21) - 10;
@@ -180,8 +179,8 @@ public abstract class MixinWorldRenderer
 					world.playSound(blockPos2, SoundEvents.WEATHER_RAIN, SoundCategory.WEATHER, 0.2F, 1.0F, false);
 				}
 			}
-			ci.cancel();
 		}
+		ci.cancel();
 	}
 	
 	@Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V",

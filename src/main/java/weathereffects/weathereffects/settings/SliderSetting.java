@@ -2,7 +2,6 @@ package weathereffects.weathereffects.settings;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.option.DoubleOption;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -12,6 +11,10 @@ public class SliderSetting extends AbstractSetting
 {
 	public final double defaultValue, min, max;
 	public final float step;
+	public final boolean displayPercent;
+	public final int decimals;
+	
+	private SliderSetting softMin, softMax;
 	
 	public SliderSetting(String id, double defaultValue, double min, double max, float step)
 	{
@@ -20,6 +23,20 @@ public class SliderSetting extends AbstractSetting
 		this.min = min;
 		this.max = max;
 		this.step = step;
+		this.displayPercent = true;
+		this.decimals = 0;
+		SettingsStorage.setDouble(id, defaultValue);
+	}
+	
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals)
+	{
+		super(id);
+		this.defaultValue = defaultValue;
+		this.min = min;
+		this.max = max;
+		this.step = step;
+		this.displayPercent = false;
+		this.decimals = decimals;
 		SettingsStorage.setDouble(id, defaultValue);
 	}
 	
@@ -31,7 +48,10 @@ public class SliderSetting extends AbstractSetting
 	@Override
 	public Text getButtonText()
 	{
-		return new TranslatableText(translationKey).append(" " + (int)(SettingsStorage.getDouble(id) / max * 100) + "%");
+		if(displayPercent)
+			return new TranslatableText(translationKey).append(": " + (int)(SettingsStorage.getDouble(id) / max * 100) + "%");
+		else
+			return new TranslatableText(translationKey).append(": " + String.format("%." + decimals + "f", (SettingsStorage.getDouble(id))));
 	}
 	
 	@Override
@@ -43,7 +63,21 @@ public class SliderSetting extends AbstractSetting
 	@Override
 	public Option asOption()
 	{
-		return new DoubleOption(translationKey, min, max, step, options -> SettingsStorage.getDouble(id),
-				(options, value) -> SettingsStorage.setDouble(id, value), (a, b) -> getButtonText());
+		return new YaySlider(translationKey, min, max, step, options -> SettingsStorage.getDouble(id),
+				(options, value) -> SettingsStorage.setDouble(id, value), requirements, (a, b) -> getButtonText(), softMin, softMax);
+	}
+	
+	@Override
+	public SliderSetting setSoftMin(SliderSetting min)
+	{
+		this.softMin = min;
+		return this;
+	}
+	
+	@Override
+	public SliderSetting setSoftMax(SliderSetting max)
+	{
+		this.softMax = max;
+		return this;
 	}
 }

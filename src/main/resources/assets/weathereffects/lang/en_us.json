@@ -1,8 +1,19 @@
 {
   "screen.weatherEffects.options.main.title": "Weather Effects Mod Options",
-  "setting.weathereffects.general.particle-amount": "Particle Amount:",
+  "setting.weathereffects.general.particle-amount": "Particle Amount",
 
   "screen.weatherEffects.options.rain.title": "Rain Options",
+  "setting.weathereffects.rain.enabled": "Particle Rain",
+  "setting.weathereffects.rain.opacity": "Raindrop opacity",
+  "setting.weathereffects.rain.random-length": "Random Raindrop length",
+  "setting.weathereffects.rain.min-length": "Min length",
+  "setting.weathereffects.rain.max-length": "Max length",
+  "setting.weathereffects.rain.distance-translucency": "Distance Translucency",
+  "setting.weathereffects.rain.acceleration": "Acceleration",
+  "setting.weathereffects.rain.splashes": "Splashes",
+  "setting.weathereffects.rain.ripples": "Ripples",
+  "setting.weathereffects.rain.ripple-speed": "Ripple Speed",
+
   "screen.weatherEffects.options.snow.title": "Snow Options",
   "screen.weatherEffects.options.sandstorm.title": "Sand Storm Options",
   "screen.weatherEffects.options.clouds.title": "Cloud Options",

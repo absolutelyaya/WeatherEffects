@@ -11,6 +11,7 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
+import weathereffects.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
 
@@ -35,7 +36,8 @@ public class RainRippleParticle extends AnimatedFloorEffectParticle
 		if(camera != null)
 		{
 			double dist = camera.getPos().distanceTo(new Vec3d(x, y, z));
-			alpha = MathHelper.lerp(MathHelper.clamp((float) dist - 1f, 0f, 25f) / 25f, 1f, 0f);
+			alpha = MathHelper.lerp(SettingsStorage.getBoolean("rain.distance-translucency") ?
+											MathHelper.clamp((float) dist - 3f, 0f, 25f) / 25f : 0f, 1f, 0f);
 			setSpriteForAge(spriteProvider);
 			if (this.age > this.maxAge / 4)
 				this.setAlpha(Math.max(alpha - ((float) this.age - (float) (this.maxAge / 4)) / (float) this.maxAge, 0f));
@@ -57,7 +59,7 @@ public class RainRippleParticle extends AnimatedFloorEffectParticle
 		{
 			RainRippleParticle rainRipple = new RainRippleParticle(world, x, y, z, spriteProvider);
 			rainRipple.setSpriteForAge(spriteProvider);
-			rainRipple.setMaxAge((int)(new Random().nextFloat() * 10 + 5));
+			rainRipple.setMaxAge((int)((new Random().nextFloat() * 10f + 5f) / SettingsStorage.getDouble("rain.ripple-speed")));
 			rainRipple.setAlpha(0);
 			return rainRipple;
 		}

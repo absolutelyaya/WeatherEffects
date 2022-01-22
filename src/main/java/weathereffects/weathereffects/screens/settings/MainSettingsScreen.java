@@ -4,15 +4,11 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DoubleOptionSliderWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.option.DoubleOption;
-import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import weathereffects.weathereffects.settings.Settings;
 import weathereffects.weathereffects.settings.SliderSetting;
-
-import java.util.Set;
 
 public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 {
@@ -33,7 +29,7 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 				(DoubleOption)particleAmount.asOption(), null));
 		
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 42, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.rain.title").append("..."), button -> this.client.setScreen(null)));
+				new TranslatableText("screen.weatherEffects.options.rain.title").append("..."), button -> this.client.setScreen(new RainSettingsScreen(this))));
 		this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 42, 150, 20,
 				new TranslatableText("screen.weatherEffects.options.snow.title").append("..."), button -> this.client.setScreen(null)));
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 66, 150, 20,
@@ -45,7 +41,8 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 90, 150, 20,
 				new TranslatableText("screen.weatherEffects.options.stars.title").append("... (TBA)"), button -> this.client.setScreen(null))).active = false;
 		
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 56, 200, 20,
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100,
+				this.height - (client != null && client.world != null ? 56 : 26), 200, 20,
 				ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
 	}
 }

@@ -2,6 +2,7 @@ package weathereffects.weathereffects.settings;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.option.CyclingOption;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.Text;
@@ -39,8 +40,8 @@ public class BooleanSetting extends AbstractSetting
 	@Override
 	public Option asOption()
 	{
-		return CyclingOption.create(translationKey,
-				ignored -> SettingsStorage.getBoolean(id),
-				(ignored, option, value) -> SettingsStorage.setBoolean(id, value));
+		return new YayCycler(translationKey,
+				ignored -> SettingsStorage.getBoolean(id), (ignored, option, value) -> SettingsStorage.setBoolean(id, value),
+				CyclingButtonWidget::onOffBuilder, requirements);
 	}
 }

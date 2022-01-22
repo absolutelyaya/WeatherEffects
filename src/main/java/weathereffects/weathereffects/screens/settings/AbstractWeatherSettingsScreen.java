@@ -29,10 +29,13 @@ public abstract class AbstractWeatherSettingsScreen extends Screen
 		super.init();
 		if(client != null)
 			paused = client.isPaused();
-		bgCheckBox = this.addDrawableChild(new CheckboxWidget(this.width / 2 + 35, this.height - 28, 200, 20,
-				new TranslatableText("screen.weatherEffects.options.showbg"), showBG));
-		pauseCheckBox = this.addDrawableChild(new CheckboxWidget(this.width / 2 - 125, this.height - 28, 200, 20,
-				new TranslatableText("screen.weatherEffects.options.gamepaused"), paused));
+		if(client != null && client.world != null)
+		{
+			bgCheckBox = this.addDrawableChild(new CheckboxWidget(this.width / 2 + 35, this.height - 28, 200, 20,
+					new TranslatableText("screen.weatherEffects.options.showbg"), showBG));
+			pauseCheckBox = this.addDrawableChild(new CheckboxWidget(this.width / 2 - 125, this.height - 28, 200, 20,
+					new TranslatableText("screen.weatherEffects.options.gamepaused"), paused));
+		}
 	}
 	
 	@Override
