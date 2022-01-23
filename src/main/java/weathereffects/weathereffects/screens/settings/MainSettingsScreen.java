@@ -10,6 +10,8 @@ import net.minecraft.text.TranslatableText;
 import weathereffects.weathereffects.settings.Settings;
 import weathereffects.weathereffects.settings.SliderSetting;
 
+import java.util.Arrays;
+
 public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 {
 	public MainSettingsScreen(Screen parent)
@@ -28,18 +30,15 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		this.addDrawableChild(new DoubleOptionSliderWidget(client.options, this.width / 2 + 5, this.height / 6 - 6, 150, 20,
 				(DoubleOption)particleAmount.asOption(), null));
 		
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 42, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.rain.title").append("..."), button -> this.client.setScreen(new RainSettingsScreen(this))));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 42, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.snow.title").append("..."), button -> this.client.setScreen(null)));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 66, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.sandstorm.title").append("..."), button -> this.client.setScreen(null)));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 66, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.clouds.title").append("..."), button -> this.client.setScreen(null)));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 + 90, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.fog.title").append("..."), button -> this.client.setScreen(null)));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height / 6 + 90, 150, 20,
-				new TranslatableText("screen.weatherEffects.options.stars.title").append("... (TBA)"), button -> this.client.setScreen(null))).active = false;
+		for (int i = 1; i < Settings.Category.values().length; i++)
+		{
+			int x = (i - 1) % 2;
+			int y = (i - 1) / 2;
+			Settings.Category cat = Arrays.stream(Settings.Category.values()).toList().get(i);
+			
+			this.addDrawableChild(new ButtonWidget(this.width / 2 - 155 + 160 * x, this.height / 6 + 42 + 24 * y, 150, 20,
+					cat.getTitle().append("..."), button -> this.client.setScreen(new SettingsScreen(this, cat))));
+		}
 		
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100,
 				this.height - (client != null && client.world != null ? 56 : 26), 200, 20,

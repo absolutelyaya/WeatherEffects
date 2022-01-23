@@ -10,8 +10,8 @@ import weathereffects.weathereffects.settings.SettingsManager;
 
 public abstract class AbstractWeatherSettingsScreen extends Screen
 {
-	private static boolean paused;
-	private static boolean showBG = true;
+	protected static boolean paused;
+	protected static boolean showBG = true;
 	
 	protected Screen parent;
 	protected CheckboxWidget bgCheckBox;
@@ -41,17 +41,25 @@ public abstract class AbstractWeatherSettingsScreen extends Screen
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
 	{
-		if(showBG)
-			renderBackground(matrices);
-		OptionsScreen.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 15, 0xFFFFFF);
-		if(client != null && client.world != null)
+		if(client != null)
 		{
-			if(!client.world.isClient)
-				pauseCheckBox.active = false;
-			if(pauseCheckBox.isChecked() != paused)
-				paused = pauseCheckBox.isChecked();
-			if(bgCheckBox.isChecked() != showBG)
-				showBG = bgCheckBox.isChecked();
+			if(showBG || client.world == null)
+				renderBackground(matrices);
+			else
+			{
+				int x = width / 2;
+				fill(matrices, x - 150, height - 33, x + 150, height, -1072689136);
+			}
+			OptionsScreen.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 15, 0xFFFFFF);
+			if(client.world != null)
+			{
+				if(!client.world.isClient)
+					pauseCheckBox.active = false;
+				if(pauseCheckBox.isChecked() != paused)
+					paused = pauseCheckBox.isChecked();
+				if(bgCheckBox.isChecked() != showBG)
+					showBG = bgCheckBox.isChecked();
+			}
 		}
 		super.render(matrices, mouseX, mouseY, delta);
 	}

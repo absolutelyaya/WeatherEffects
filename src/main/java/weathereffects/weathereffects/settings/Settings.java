@@ -49,6 +49,8 @@ public class Settings
 	
 	public static Option[] getAsOptions(Category category)
 	{
+		if(SETTINGS.get(category) == null)
+			return new Option[0];
 		List<Option> options = new ArrayList<>();
 		for (SettingsOption so : SETTINGS.get(category))
 		{
@@ -78,12 +80,23 @@ public class Settings
 	
 	public enum Category
 	{
-		GENERAL,
-		RAIN,
-		SNOW,
-		SANDSTORM,
-		CLOUDS,
-		FOG,
-		STARS
+		GENERAL(new TranslatableText("screen.weatherEffects.options.main.title")),
+		RAIN(new TranslatableText("screen.weatherEffects.options.rain.title")),
+		SNOW(new TranslatableText("screen.weatherEffects.options.snow.title")),
+		SANDSTORM(new TranslatableText("screen.weatherEffects.options.sandstorm.title")),
+		CLOUDS(new TranslatableText("screen.weatherEffects.options.clouds.title")),
+		FOG(new TranslatableText("screen.weatherEffects.options.fog.title")),
+		STARS(new TranslatableText("screen.weatherEffects.options.stars.title"));
+		private final TranslatableText title;
+		
+		Category(TranslatableText title)
+		{
+			this.title = title;
+		}
+		
+		public TranslatableText getTitle()
+		{
+			return title.copy();
+		}
 	}
 }
