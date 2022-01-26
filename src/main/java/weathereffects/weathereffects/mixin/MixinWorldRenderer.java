@@ -39,8 +39,11 @@ public abstract class MixinWorldRenderer
 	
 	@Shadow @Final private MinecraftClient client;
 	
-	@Unique private float fogDistance, fogEndDistance = -1;
+	@Unique private float fogDistance;
+	@Unique private float fogEndDistance = -1;
+	@Unique private final float windChangeSpeed = 0.5f;
 	@Unique private boolean isRaining;
+	@Unique private Vec2f windDir = new Vec2f(0.2f, 0.2f), curWindDir = new Vec2f(0.2f, 0.2f);
 	
 	@Inject(method = "renderWeather", at = @At("HEAD"), cancellable = true)
 	public void onRenderWeather(LightmapTextureManager manager, float delta, double x, double y, double z, CallbackInfo ci)
@@ -57,6 +60,12 @@ public abstract class MixinWorldRenderer
 			double minHeight = y + 15;
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
+			if(r.nextFloat() > 0.99)
+			{
+				windDir = new Vec2f(r.nextFloat() - 0.5f, r.nextFloat() - 0.5f);
+			}
+			curWindDir = new Vec2f(MathHelper.lerp(0.02f * windChangeSpeed, curWindDir.x, windDir.x),
+					MathHelper.lerp(0.02f * windChangeSpeed, curWindDir.y, windDir.y));
 			for (int i = 0; i < world.getRainGradient(delta) * SettingsStorage.getDouble("general.particle-amount") * delta; i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
@@ -84,10 +93,10 @@ public abstract class MixinWorldRenderer
 										{
 											if(particle < 0.75f)
 												world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
-														x + pos.x, top + 0.1, z + pos.z, 0.2, r.nextFloat() / 5, 0.2);
+														x + pos.x, top + 0.1, z + pos.z, curWindDir.x, r.nextFloat() / 5, curWindDir.y);
 											else
 												world.addParticle(WeatherEffects.WIND_DUST,
-														x + pos.x, top + r.nextInt(5), z + pos.z, 0.2, 0.1, 0.2);
+														x + pos.x, top + r.nextInt(5), z + pos.z, curWindDir.x, 0.1, curWindDir.y);
 										}
 									}
 								}
