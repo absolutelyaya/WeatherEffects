@@ -41,7 +41,7 @@ public abstract class MixinWorldRenderer
 	
 	@Unique private float fogDistance;
 	@Unique private float fogEndDistance = -1;
-	@Unique private final float windChangeSpeed = 0.5f;
+	@Unique private final float windChangeSpeed = 1.5f;
 	@Unique private boolean isRaining;
 	@Unique private Vec2f windDir = new Vec2f(0.2f, 0.2f), curWindDir = new Vec2f(0.2f, 0.2f);
 	
@@ -60,12 +60,12 @@ public abstract class MixinWorldRenderer
 			double minHeight = y + 15;
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
-			if(r.nextFloat() > 0.99)
+			if(r.nextFloat() < 0.01 * delta)
 			{
 				windDir = new Vec2f(r.nextFloat() - 0.5f, r.nextFloat() - 0.5f);
 			}
-			curWindDir = new Vec2f(MathHelper.lerp(0.02f * windChangeSpeed, curWindDir.x, windDir.x),
-					MathHelper.lerp(0.02f * windChangeSpeed, curWindDir.y, windDir.y));
+			curWindDir = new Vec2f(MathHelper.lerp(0.02f * windChangeSpeed * delta, curWindDir.x, windDir.x),
+					MathHelper.lerp(0.02f * windChangeSpeed * delta, curWindDir.y, windDir.y));
 			for (int i = 0; i < world.getRainGradient(delta) * SettingsStorage.getDouble("general.particle-amount") * delta; i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
