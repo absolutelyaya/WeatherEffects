@@ -3,6 +3,8 @@ package weathereffects.weathereffects.settings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.option.Option;
+import net.minecraft.text.TranslatableText;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +36,22 @@ public class Settings
 			.setRequirements(List.of(CUSTOM_RAIN));
 	public static final SliderSetting RAIN_RIPPLE_SPEED = new SliderSetting("rain.ripple-speed", 1.0, 0.01, 2.0, 0.01f, 2)
 			.setRequirements(List.of(CUSTOM_RAIN, RAIN_RIPPLES));
+	//Snow
+	public static final BooleanSetting CUSTOM_SNOW = new BooleanSetting("snow.enabled", true);
+	public static final SliderSetting SNOWFLAKE_SIZE = new SliderSetting("snow.size", 1.0, 0.0, 2.0, 0.05f, 2)
+			.setRequirements(List.of(CUSTOM_SNOW));
+	public static final SliderSetting SNOWFLAKE_ROTATION = new SliderSetting("snow.rotation", 1.0, 0.0, 2.0, 0.1f, 1)
+			.setRequirements(List.of(CUSTOM_SNOW));
+	public static final SliderSetting SNOWFLAKE_GRAVITY = new SliderSetting("snow.gravity", 1.0, 0.5, 1.5, 0.05f, 2)
+			.setRequirements(List.of(CUSTOM_SNOW));
+	public static final SliderSetting SNOWFLAKE_MELT_SPEED = new SliderSetting("snow.melt-speed", 1.0, 0.5, 10.0, 0.1f, 1)
+			.setRequirements(List.of(CUSTOM_SNOW));
+	public static final SliderSetting SNOWFLAKE_WIND_STRENGTH = new SliderSetting("snow.wind.strength", 1.0, 0.0, 2.0, 0.1f, 1)
+			.setRequirements(List.of(CUSTOM_SNOW));
+	public static final SliderSetting SNOWFLAKE_WIND_CHANGE_RATE = new SliderSetting("snow.wind.change-rate", 1.0, 0.0, 2.0, 0.01f, 2)
+			.setRequirements(List.of(CUSTOM_SNOW));
+	public static final SliderSetting SNOWFLAKE_WIND_CHANGE_SPEED = new SliderSetting("snow.wind.change-speed", 1.0, 0.0, 2.0, 0.01f, 2)
+			.setRequirements(List.of(CUSTOM_SNOW));
 	
 	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	
@@ -42,6 +60,8 @@ public class Settings
 		SETTINGS.put(Category.GENERAL, List.of(PARTICLE_AMOUNT));
 		SETTINGS.put(Category.RAIN, List.of(CUSTOM_RAIN, RAINDROP_OPACITY, RANDOM_RAINDROP_LENGTH, RAINDROP_MIN_LENGTH,
 				RAINDROP_MAX_LENGTH, RAIN_DISTANCE_TRANSLUCENCY, RAIN_ACCELERATION, RAIN_SPLASHING, RAIN_RIPPLES, RAIN_RIPPLE_SPEED));
+		SETTINGS.put(Category.SNOW, List.of(CUSTOM_SNOW, SNOWFLAKE_SIZE, SNOWFLAKE_ROTATION, SNOWFLAKE_GRAVITY, SNOWFLAKE_MELT_SPEED,
+				SNOWFLAKE_WIND_STRENGTH, SNOWFLAKE_WIND_CHANGE_RATE, SNOWFLAKE_WIND_CHANGE_SPEED));
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);

@@ -14,21 +14,21 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import weathereffects.weathereffects.WeatherEffects;
+import weathereffects.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
 
 public class SnowflakeParticle extends SpriteBillboardParticle
 {
-	float groundTime, maxGroundTime, rotSpeed, startScale;
-	double windStrength = 0.4f, windChangeSpeed = 1f, windChangeInterval = 1f;
-	float meltSpeed = 0.5f;
+	float groundTime, maxGroundTime, rotSpeed, startScale, meltSpeed;
 	Vec2f wind = new Vec2f(0, 0);
 	
 	protected SnowflakeParticle(ClientWorld world, double x, double y, double z)
 	{
 		super(world, x, y, z);
-		gravityStrength = 0.1f;
-		startScale = scale;
+		gravityStrength = 0.1f * (float)SettingsStorage.getDouble("snow.gravity");
+		startScale = scale * (float)SettingsStorage.getDouble("snow.size");
+		meltSpeed = (float)SettingsStorage.getDouble("snow.melt-speed");
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class SnowflakeParticle extends SpriteBillboardParticle
 					if(state.isIn(FluidTags.WATER))
 					{
 						world.addParticle(WeatherEffects.RAIN_RIPPLE, x, pos.getY() + 0.9, z, 0, 0, 0);
-						meltSpeed = 3f;
+						meltSpeed *= 3f;
 					}
 					else if(state.isIn(FluidTags.LAVA))
 					{
@@ -77,12 +77,14 @@ public class SnowflakeParticle extends SpriteBillboardParticle
 	
 	void wind()
 	{
-		if(age % 20 * windChangeInterval == 1)
+		if(age % 20 * SettingsStorage.getDouble("snow.wind.change-rate") == 1)
 		{
 			wind = new Vec2f((random.nextFloat() - 0.5f) * 2f, (random.nextFloat() - 0.5f) * 2f);
 		}
-		velocityX = MathHelper.lerp(0.02D * windChangeSpeed, velocityX, wind.x * windStrength);
-		velocityZ = MathHelper.lerp(0.02D * windChangeSpeed, velocityZ, wind.y * windStrength);
+		velocityX = MathHelper.lerp(0.02D * SettingsStorage.getDouble("snow.wind.change-speed"),
+				velocityX, wind.x * SettingsStorage.getDouble("snow.wind.strength"));
+		velocityZ = MathHelper.lerp(0.02D * SettingsStorage.getDouble("snow.wind.change-speed"),
+				velocityZ, wind.y * SettingsStorage.getDouble("snow.wind.strength"));
 		
 	}
 	
@@ -121,7 +123,7 @@ public class SnowflakeParticle extends SpriteBillboardParticle
 			snowflake.setMaxGroundTime(10 + r.nextInt(15));
 			snowflake.setVelocity(0, -r.nextDouble() / 6.935, 0);
 			snowflake.setMaxAge(400);
-			snowflake.setRotSpeed((2 * r.nextFloat() - 1) / 4);
+			snowflake.setRotSpeed((2f * r.nextFloat() - 1f) / 4f * (float)SettingsStorage.getDouble("snow.rotation"));
 			snowflake.setAlpha(0f);
 			return snowflake;
 		}

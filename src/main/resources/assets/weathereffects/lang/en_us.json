@@ -15,6 +15,15 @@
   "setting.weathereffects.rain.ripple-speed": "Ripple Speed",
 
   "screen.weatherEffects.options.snow.title": "Snow Options",
+  "setting.weathereffects.snow.enabled": "Particle Snow",
+  "setting.weathereffects.snow.size": "Size",
+  "setting.weathereffects.snow.rotation": "Rotation Speed",
+  "setting.weathereffects.snow.gravity": "Gravity Scale",
+  "setting.weathereffects.snow.melt-speed": "Melt Speed",
+  "setting.weathereffects.snow.wind.strength": "Wind Strength",
+  "setting.weathereffects.snow.wind.change-rate": "Wind Change Rate",
+  "setting.weathereffects.snow.wind.change-speed": "Wind Change Speed",
+
   "screen.weatherEffects.options.sandstorm.title": "Sand Storm Options",
   "screen.weatherEffects.options.clouds.title": "Cloud Options",
   "screen.weatherEffects.options.fog.title": "Fog Options",
