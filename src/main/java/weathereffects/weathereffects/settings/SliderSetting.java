@@ -64,7 +64,7 @@ public class SliderSetting extends AbstractSetting
 	public Option asOption()
 	{
 		return new YaySlider(translationKey, min, max, step, options -> SettingsStorage.getDouble(id),
-				(options, value) -> SettingsStorage.setDouble(id, value), requirements, (a, b) -> getButtonText(), softMin, softMax);
+				(options, value) -> SettingsStorage.setDouble(id, value), requirements, (a, b) -> getButtonText(), softMin, softMax, defaultValue);
 	}
 	
 	@Override
