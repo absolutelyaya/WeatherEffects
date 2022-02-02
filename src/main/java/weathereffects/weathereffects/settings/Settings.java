@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.TranslatableText;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +17,8 @@ public class Settings
 	public static final SliderSetting PARTICLE_AMOUNT = new SliderSetting("general.particle-amount", 10.0, 0.0, 20.0, 0.05f, 1);
 	//Rain
 	public static final BooleanSetting CUSTOM_RAIN = new BooleanSetting("rain.enabled", true);
+	public static final SliderSetting RAINDROP_AMOUNT = new SliderSetting("rain.amount", 1.0, 0.0, 1.0, 0.01f)
+			.setRequirements(List.of(CUSTOM_RAIN));
 	public static final SliderSetting RAINDROP_OPACITY = new SliderSetting("rain.opacity", 0.75, 0.0, 1.0, 0.01f)
 			.setRequirements(List.of(CUSTOM_RAIN));
 	public static final BooleanSetting RANDOM_RAINDROP_LENGTH = new BooleanSetting("rain.random-length", true)
@@ -38,6 +39,8 @@ public class Settings
 			.setRequirements(List.of(CUSTOM_RAIN, RAIN_RIPPLES));
 	//Snow
 	public static final BooleanSetting CUSTOM_SNOW = new BooleanSetting("snow.enabled", true);
+	public static final SliderSetting SNOWFLAKE_AMOUNT = new SliderSetting("snow.amount", 1.0, 0.0, 1.0, 0.01f)
+			.setRequirements(List.of(CUSTOM_SNOW));
 	public static final SliderSetting SNOWFLAKE_SIZE = new SliderSetting("snow.size", 1.0, 0.0, 2.0, 0.05f, 2)
 			.setRequirements(List.of(CUSTOM_SNOW));
 	public static final SliderSetting SNOWFLAKE_ROTATION = new SliderSetting("snow.rotation", 1.0, 0.0, 2.0, 0.1f, 1)
@@ -53,15 +56,21 @@ public class Settings
 	public static final SliderSetting SNOWFLAKE_WIND_CHANGE_SPEED = new SliderSetting("snow.wind.change-speed", 1.0, 0.0, 2.0, 0.01f, 2)
 			.setRequirements(List.of(CUSTOM_SNOW));
 	
+	//Sandstorm
+	public static final BooleanSetting SANDSTORM = new BooleanSetting("sandstorm.enabled", true);
+	public static final SliderSetting SANDSTORM_DUST_AMOUNT = new SliderSetting("sandstorm.dust.amount", 1.0, 0.0, 1.0, 0.01f)
+			.setRequirements(List.of(SANDSTORM));
+	
 	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	
 	static
 	{
 		SETTINGS.put(Category.GENERAL, List.of(PARTICLE_AMOUNT));
-		SETTINGS.put(Category.RAIN, List.of(CUSTOM_RAIN, RAINDROP_OPACITY, RANDOM_RAINDROP_LENGTH, RAINDROP_MIN_LENGTH,
+		SETTINGS.put(Category.RAIN, List.of(CUSTOM_RAIN, RAINDROP_AMOUNT, RAINDROP_OPACITY, RANDOM_RAINDROP_LENGTH, RAINDROP_MIN_LENGTH,
 				RAINDROP_MAX_LENGTH, RAIN_DISTANCE_TRANSLUCENCY, RAIN_ACCELERATION, RAIN_SPLASHING, RAIN_RIPPLES, RAIN_RIPPLE_SPEED));
-		SETTINGS.put(Category.SNOW, List.of(CUSTOM_SNOW, SNOWFLAKE_SIZE, SNOWFLAKE_ROTATION, SNOWFLAKE_GRAVITY, SNOWFLAKE_MELT_SPEED,
+		SETTINGS.put(Category.SNOW, List.of(CUSTOM_SNOW, SNOWFLAKE_AMOUNT, SNOWFLAKE_SIZE, SNOWFLAKE_ROTATION, SNOWFLAKE_GRAVITY, SNOWFLAKE_MELT_SPEED,
 				SNOWFLAKE_WIND_STRENGTH, SNOWFLAKE_WIND_CHANGE_RATE, SNOWFLAKE_WIND_CHANGE_SPEED));
+		SETTINGS.put(Category.SANDSTORM, List.of(SANDSTORM, SANDSTORM_DUST_AMOUNT));
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);

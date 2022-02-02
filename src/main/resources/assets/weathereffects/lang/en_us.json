@@ -4,6 +4,7 @@
 
   "screen.weatherEffects.options.rain.title": "Rain Options",
   "setting.weathereffects.rain.enabled": "Particle Rain",
+  "setting.weathereffects.rain.amount": "Rain Particle Amount",
   "setting.weathereffects.rain.opacity": "Raindrop opacity",
   "setting.weathereffects.rain.random-length": "Random Raindrop length",
   "setting.weathereffects.rain.min-length": "Min length",
@@ -16,6 +17,7 @@
 
   "screen.weatherEffects.options.snow.title": "Snow Options",
   "setting.weathereffects.snow.enabled": "Particle Snow",
+  "setting.weathereffects.snow.amount": "Snow Particle Amount",
   "setting.weathereffects.snow.size": "Size",
   "setting.weathereffects.snow.rotation": "Rotation Speed",
   "setting.weathereffects.snow.gravity": "Gravity Scale",
@@ -25,6 +27,9 @@
   "setting.weathereffects.snow.wind.change-speed": "Wind Change Speed",
 
   "screen.weatherEffects.options.sandstorm.title": "Sand Storm Options",
+  "setting.weathereffects.sandstorm.enabled": "Sandstorms",
+  "setting.weathereffects.sandstorm.dust.amount": "Snow Particle Amount",
+
   "screen.weatherEffects.options.clouds.title": "Cloud Options",
   "screen.weatherEffects.options.fog.title": "Fog Options",
   "screen.weatherEffects.options.stars.title": "Star Options",

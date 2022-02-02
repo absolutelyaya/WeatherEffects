@@ -73,38 +73,72 @@ public abstract class MixinWorldRenderer
 						(r.nextDouble() - 0.5) * 30);
 				if(world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int)(x + pos.x), (int)(z + pos.z)) < pos.y)
 				{
-					switch(world.getBiome(new BlockPos(pos.add(new Vec3d(x, 0, z)))).getPrecipitation())
+					switch (world.getBiome(new BlockPos(pos.add(new Vec3d(x, 0, z)))).getPrecipitation())
 					{
 						case RAIN -> {
-							if(SettingsStorage.getBoolean("rain.enabled"))
-								world.addParticle(WeatherEffects.RAIN_DROP, x + pos.x, pos.y, z + pos.z, 0, 0, 0);
+							if (SettingsStorage.getBoolean("rain.enabled"))
+								rain(r, delta, x, z, pos);
 						}
-						case SNOW -> world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y - r.nextFloat() * 10f,
-								z + pos.z * 3, 0, 0, 0);
-						default ->
-								{
-									Biome.Category biome = world.getBiome(new BlockPos(pos).add(new Vec3i(x, 0, z))).getCategory();
-									if(biome.equals(Biome.Category.DESERT) || biome.equals(Biome.Category.MESA))
-									{
-										int top = world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int)(x + pos.x), (int)(z + pos.z));
-										float particle = r.nextFloat();
-										BlockState b = world.getBlockState(new BlockPos(x + pos.x, top, z + pos.z).down());
-										if(b.isOf(Blocks.SAND) || b.isOf(Blocks.RED_SAND))
-										{
-											if(particle < 0.75f)
-												world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
-														x + pos.x, top + 0.1, z + pos.z, curWindDir.x, r.nextFloat() / 5, curWindDir.y);
-											else
-												world.addParticle(WeatherEffects.WIND_DUST,
-														x + pos.x, top + r.nextInt(5), z + pos.z, curWindDir.x, 0.1, curWindDir.y);
-										}
-									}
-								}
+						case SNOW -> {
+							if (SettingsStorage.getBoolean("snow.enabled"))
+								snow(r, delta, x, z, pos);
+						}
+						default -> {
+							if (!SettingsStorage.getBoolean("sandstorm.enabled"))
+								ci.cancel();
+							sandstorm(r, delta, x, z, pos);
+						}
 					}
 				}
 			}
 		}
 		ci.cancel();
+	}
+	
+	@Unique
+	public void rain(Random r, float delta, double x, double z, Vec3d pos)
+	{
+		double amount = SettingsStorage.getDouble("rain.amount");
+		if(amount == 1.0 || r.nextFloat() < SettingsStorage.getDouble("rain.amount"))
+		{
+			world.addParticle(WeatherEffects.RAIN_DROP, x + pos.x, pos.y, z + pos.z, 0, 0, 0);
+		}
+	}
+	
+	@Unique
+	public void snow(Random r, float delta, double x, double z, Vec3d pos)
+	{
+		double amount = SettingsStorage.getDouble("snow.amount");
+		if(amount == 1.0 || r.nextFloat() < SettingsStorage.getDouble("snow.amount"))
+		{
+			world.addParticle(WeatherEffects.SNOW_FLAKE, x + pos.x * 3, pos.y - r.nextFloat() * 10f,
+					z + pos.z * 3, 0, 0, 0);
+		}
+	}
+	
+	@Unique
+	public void sandstorm(Random r, float delta, double x, double z, Vec3d pos)
+	{
+		double amount = SettingsStorage.getDouble("sandstorm.dust.amount");
+		if(amount == 1.0 || r.nextFloat() < SettingsStorage.getDouble("sandstorm.dust.amount"))
+		{
+			Biome.Category biome = world.getBiome(new BlockPos(pos).add(new Vec3i(x, 0, z))).getCategory();
+			if(biome.equals(Biome.Category.DESERT) || biome.equals(Biome.Category.MESA))
+			{
+				int top = world.getTopY(Heightmap.Type.MOTION_BLOCKING, (int)(x + pos.x), (int)(z + pos.z));
+				float particle = r.nextFloat();
+				BlockState b = world.getBlockState(new BlockPos(x + pos.x, top, z + pos.z).down());
+				if(b.isOf(Blocks.SAND) || b.isOf(Blocks.RED_SAND))
+				{
+					if(particle < 0.75f)
+						world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
+								x + pos.x, top + 0.1, z + pos.z, curWindDir.x, r.nextFloat() / 5, curWindDir.y);
+					else
+						world.addParticle(WeatherEffects.WIND_DUST,
+								x + pos.x, top + r.nextInt(5), z + pos.z, curWindDir.x, 0.1, curWindDir.y);
+				}
+			}
+		}
 	}
 	
 	@Inject(method = "render", at = @At(value = "INVOKE",
