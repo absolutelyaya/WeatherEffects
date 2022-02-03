@@ -1,5 +1,7 @@
 package weathereffects.weathereffects.particles;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
@@ -7,6 +9,7 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import org.jetbrains.annotations.Nullable;
+import weathereffects.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
 
@@ -19,8 +22,8 @@ public class WindDustParticle extends SpriteBillboardParticle
 	{
 		super(clientWorld, d, e, f);
 		this.spriteProvider = spriteProvider;
-		this.rotationSpeed = ((float)Math.random() - 0.5f) * 0.1f;
-		this.gravityStrength = 0.1f;
+		this.rotationSpeed = ((float)Math.random() - 0.5f) * 0.1f * (float)SettingsStorage.getDouble("sandstorm.wind-dust.rot-speed");
+		this.gravityStrength = 0.1f * (float)SettingsStorage.getDouble("sandstorm.wind-dust.gravity");
 	}
 	
 	@Override
@@ -53,10 +56,13 @@ public class WindDustParticle extends SpriteBillboardParticle
 		{
 			Random r = new Random();
 			WindDustParticle dust = new WindDustParticle(world, x, y, z, spriteProvider);
-			dust.setMaxAge(20 + r.nextInt(10));
+			dust.setMaxAge((int)((20 + r.nextInt(10)) * SettingsStorage.getDouble("sandstorm.wind-dust.lifetime")));
 			dust.setVelocity(0, -r.nextDouble() / 6.935, 0);
 			BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, new BlockPos(x, y, z)).down();
-			int color = MinecraftClient.getInstance().getBlockColors().getParticleColor(world.getBlockState(pos), world, pos);
+			BlockState block = world.getBlockState(pos);
+			if(block.isOf(Blocks.CACTUS))
+				return null;
+			int color = MinecraftClient.getInstance().getBlockColors().getParticleColor(block, world, pos);
 			float red = (float)(color >> 16 & 0xFF) / 255.0f;
 			float green = (float)(color >> 8 & 0xFF) / 255.0f;
 			float blue = (float)(color & 0xFF) / 255.0f;

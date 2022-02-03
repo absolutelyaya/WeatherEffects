@@ -41,7 +41,6 @@ public abstract class MixinWorldRenderer
 	
 	@Unique private float fogDistance;
 	@Unique private float fogEndDistance = -1;
-	@Unique private final float windChangeSpeed = 1.5f;
 	@Unique private boolean isRaining;
 	@Unique private Vec2f windDir = new Vec2f(0.2f, 0.2f), curWindDir = new Vec2f(0.2f, 0.2f);
 	
@@ -60,12 +59,12 @@ public abstract class MixinWorldRenderer
 			double minHeight = y + 15;
 			double maxHeight = this.world.getDimensionEffects().getCloudsHeight();
 			Random r = new Random();
-			if(r.nextFloat() < 0.01 * delta)
+			if(r.nextFloat() < 0.01 * SettingsStorage.getDouble("sandstorm.wind.change-rate") * delta)
 			{
-				windDir = new Vec2f(r.nextFloat() - 0.5f, r.nextFloat() - 0.5f);
+				windDir = new Vec2f(r.nextFloat() - 0.5f, r.nextFloat() - 0.5f).multiply((float)SettingsStorage.getDouble("sandstorm.wind.strength"));
 			}
-			curWindDir = new Vec2f(MathHelper.lerp(0.02f * windChangeSpeed * delta, curWindDir.x, windDir.x),
-					MathHelper.lerp(0.02f * windChangeSpeed * delta, curWindDir.y, windDir.y));
+			curWindDir = new Vec2f(MathHelper.lerp((float)(0.02 * SettingsStorage.getDouble("sandstorm.wind.change-speed") * delta), curWindDir.x, windDir.x),
+					MathHelper.lerp((float)(0.02 * SettingsStorage.getDouble("sandstorm.wind.change-speed") * delta), curWindDir.y, windDir.y));
 			for (int i = 0; i < world.getRainGradient(delta) * SettingsStorage.getDouble("general.particle-amount") * delta; i++)
 			{
 				Vec3d pos = new Vec3d((r.nextDouble() - 0.5) * 30,
@@ -77,16 +76,15 @@ public abstract class MixinWorldRenderer
 					{
 						case RAIN -> {
 							if (SettingsStorage.getBoolean("rain.enabled"))
-								rain(r, delta, x, z, pos);
+								rain(r, x, z, pos);
 						}
 						case SNOW -> {
 							if (SettingsStorage.getBoolean("snow.enabled"))
-								snow(r, delta, x, z, pos);
+								snow(r, x, z, pos);
 						}
 						default -> {
-							if (!SettingsStorage.getBoolean("sandstorm.enabled"))
-								ci.cancel();
-							sandstorm(r, delta, x, z, pos);
+							if (SettingsStorage.getBoolean("sandstorm.enabled"))
+								sandstorm(r, x, z, pos);
 						}
 					}
 				}
@@ -96,7 +94,7 @@ public abstract class MixinWorldRenderer
 	}
 	
 	@Unique
-	public void rain(Random r, float delta, double x, double z, Vec3d pos)
+	public void rain(Random r, double x, double z, Vec3d pos)
 	{
 		double amount = SettingsStorage.getDouble("rain.amount");
 		if(amount == 1.0 || r.nextFloat() < SettingsStorage.getDouble("rain.amount"))
@@ -106,7 +104,7 @@ public abstract class MixinWorldRenderer
 	}
 	
 	@Unique
-	public void snow(Random r, float delta, double x, double z, Vec3d pos)
+	public void snow(Random r, double x, double z, Vec3d pos)
 	{
 		double amount = SettingsStorage.getDouble("snow.amount");
 		if(amount == 1.0 || r.nextFloat() < SettingsStorage.getDouble("snow.amount"))
@@ -117,7 +115,7 @@ public abstract class MixinWorldRenderer
 	}
 	
 	@Unique
-	public void sandstorm(Random r, float delta, double x, double z, Vec3d pos)
+	public void sandstorm(Random r, double x, double z, Vec3d pos)
 	{
 		double amount = SettingsStorage.getDouble("sandstorm.dust.amount");
 		if(amount == 1.0 || r.nextFloat() < SettingsStorage.getDouble("sandstorm.dust.amount"))
@@ -131,11 +129,15 @@ public abstract class MixinWorldRenderer
 				if(b.isOf(Blocks.SAND) || b.isOf(Blocks.RED_SAND))
 				{
 					if(particle < 0.75f)
-						world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
-								x + pos.x, top + 0.1, z + pos.z, curWindDir.x, r.nextFloat() / 5, curWindDir.y);
+					{
+						if(SettingsStorage.getBoolean("sandstorm.ground-dust"))
+							world.addParticle(new ItemStackParticleEffect(ParticleTypes.ITEM, b.getBlock().asItem().getDefaultStack()),
+									x + pos.x, top + 0.1, z + pos.z, curWindDir.x, r.nextFloat() / 5, curWindDir.y);
+					}
 					else
-						world.addParticle(WeatherEffects.WIND_DUST,
-								x + pos.x, top + r.nextInt(5), z + pos.z, curWindDir.x, 0.1, curWindDir.y);
+						if(SettingsStorage.getBoolean("sandstorm.wind-dust"))
+							world.addParticle(WeatherEffects.WIND_DUST,
+									x + pos.x, top + r.nextInt(5), z + pos.z, curWindDir.x, 0.1, curWindDir.y);
 				}
 			}
 		}

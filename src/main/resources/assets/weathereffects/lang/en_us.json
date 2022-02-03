@@ -28,7 +28,15 @@
 
   "screen.weatherEffects.options.sandstorm.title": "Sand Storm Options",
   "setting.weathereffects.sandstorm.enabled": "Sandstorms",
-  "setting.weathereffects.sandstorm.dust.amount": "Snow Particle Amount",
+  "setting.weathereffects.sandstorm.dust.amount": "Dust Particle Amount",
+  "setting.weathereffects.sandstorm.wind.strength": "Wind Strength",
+  "setting.weathereffects.sandstorm.wind.change-rate": "Wind Change Rate",
+  "setting.weathereffects.sandstorm.wind.change-speed": "Wind Change Speed",
+  "setting.weathereffects.sandstorm.wind-dust": "Air Dust Particle",
+  "setting.weathereffects.sandstorm.wind-dust.lifetime": "Air Dust lifetime",
+  "setting.weathereffects.sandstorm.wind-dust.rot-speed": "Air Dust rotation",
+  "setting.weathereffects.sandstorm.wind-dust.gravity": "Air Dust gravity",
+  "setting.weathereffects.sandstorm.ground-dust": "Ground Dust Particle",
 
   "screen.weatherEffects.options.clouds.title": "Cloud Options",
   "screen.weatherEffects.options.fog.title": "Fog Options",

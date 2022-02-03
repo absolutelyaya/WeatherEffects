@@ -60,6 +60,23 @@ public class Settings
 	public static final BooleanSetting SANDSTORM = new BooleanSetting("sandstorm.enabled", true);
 	public static final SliderSetting SANDSTORM_DUST_AMOUNT = new SliderSetting("sandstorm.dust.amount", 1.0, 0.0, 1.0, 0.01f)
 			.setRequirements(List.of(SANDSTORM));
+	public static final SliderSetting SANDSTORM_WIND_STRENGTH = new SliderSetting("sandstorm.wind.strength", 1.0, 0.0, 2.0, 0.1f, 1)
+			.setRequirements(List.of(SANDSTORM));
+	public static final SliderSetting SANDSTORM_WIND_CHANGE_RATE = new SliderSetting("sandstorm.wind.change-rate", 1.0, 0.0, 2.0, 0.01f, 2)
+			.setRequirements(List.of(SANDSTORM));
+	public static final SliderSetting SANDSTORM_WIND_CHANGE_SPEED = new SliderSetting("sandstorm.wind.change-speed", 1.0, 0.0, 2.0, 0.01f, 2)
+			.setRequirements(List.of(SANDSTORM));
+	public static final BooleanSetting SANDSTORM_WIND_DUST = new BooleanSetting("sandstorm.wind-dust", true)
+			.setRequirements(List.of(SANDSTORM));
+	public static final SliderSetting SANDSTORM_WIND_DUST_LIFETIME = new SliderSetting("sandstorm.wind-dust.lifetime", 1.0, 0.5, 2.0, 0.01f, 2)
+			.setRequirements(List.of(SANDSTORM, SANDSTORM_WIND_DUST));
+	public static final SliderSetting SANDSTORM_WIND_DUST_ROTSPEED = new SliderSetting("sandstorm.wind-dust.rot-speed", 1.0, 0.01, 2.0, 0.01f, 2)
+			.setRequirements(List.of(SANDSTORM, SANDSTORM_WIND_DUST));
+	public static final SliderSetting SANDSTORM_WIND_DUST_GRAVITY = new SliderSetting("sandstorm.wind-dust.gravity", 1.0, 0.01, 2.0, 0.01f, 2)
+			.setRequirements(List.of(SANDSTORM, SANDSTORM_WIND_DUST));
+	public static final BooleanSetting SANDSTORM_GROUND_DUST = new BooleanSetting("sandstorm.ground-dust", true)
+			.setRequirements(List.of(SANDSTORM));
+	
 	
 	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	
@@ -70,7 +87,9 @@ public class Settings
 				RAINDROP_MAX_LENGTH, RAIN_DISTANCE_TRANSLUCENCY, RAIN_ACCELERATION, RAIN_SPLASHING, RAIN_RIPPLES, RAIN_RIPPLE_SPEED));
 		SETTINGS.put(Category.SNOW, List.of(CUSTOM_SNOW, SNOWFLAKE_AMOUNT, SNOWFLAKE_SIZE, SNOWFLAKE_ROTATION, SNOWFLAKE_GRAVITY, SNOWFLAKE_MELT_SPEED,
 				SNOWFLAKE_WIND_STRENGTH, SNOWFLAKE_WIND_CHANGE_RATE, SNOWFLAKE_WIND_CHANGE_SPEED));
-		SETTINGS.put(Category.SANDSTORM, List.of(SANDSTORM, SANDSTORM_DUST_AMOUNT));
+		SETTINGS.put(Category.SANDSTORM, List.of(SANDSTORM, SANDSTORM_DUST_AMOUNT, SANDSTORM_WIND_STRENGTH, SANDSTORM_WIND_CHANGE_RATE,
+				SANDSTORM_WIND_CHANGE_SPEED, SANDSTORM_WIND_DUST, SANDSTORM_WIND_DUST_LIFETIME, SANDSTORM_WIND_DUST_ROTSPEED,
+				SANDSTORM_WIND_DUST_GRAVITY, SANDSTORM_GROUND_DUST));
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);
