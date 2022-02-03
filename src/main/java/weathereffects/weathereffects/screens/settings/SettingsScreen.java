@@ -6,6 +6,7 @@ import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.Option;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.TranslatableText;
 import weathereffects.weathereffects.settings.Settings;
 
 public class SettingsScreen extends AbstractWeatherSettingsScreen
@@ -51,10 +52,10 @@ public class SettingsScreen extends AbstractWeatherSettingsScreen
 		{
 			int x = width / 2;
 			int y = height / 2;
-			int length = client.textRenderer.getWidth("This is currently empty...");
+			int length = client.textRenderer.getWidth(new TranslatableText("screen.weatherEffects.options.empty"));
 			if(!showBG && client.world != null)
 				fill(matrices, x - (length / 2 + 3), y - 7, x + length / 2 + 3, y + 7, -1072689136);
-			drawCenteredText(matrices, client.textRenderer, "This is currently empty...", x, y - 4, 0xFFFFFFFF);
+			drawCenteredText(matrices, client.textRenderer, new TranslatableText("screen.weatherEffects.options.empty"), x, y - 4, 0xFFFFFFFF);
 		}
 	}
 }

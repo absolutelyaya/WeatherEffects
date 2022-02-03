@@ -58,9 +58,9 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 	
 	void reset()
 	{
-		this.value = defaultValue;
-		option.set(options, defaultValue); ///TODO: fix slider reset rendering issue (wrong slider percentage)
+		this.value = (defaultValue - option.getMin()) / (option.getMax() - option.getMin());
+		applyValue();
 		updateMessage();
-		this.options.write();
+		onRelease(0, 0); //TODO: Popup for resetting sliders
 	}
 }
