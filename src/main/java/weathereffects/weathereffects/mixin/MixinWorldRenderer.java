@@ -233,13 +233,15 @@ public abstract class MixinWorldRenderer
 					shift = At.Shift.AFTER))
 	public void onRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double d, double e, double f, CallbackInfo ci)
 	{
+		if(!SettingsStorage.getBoolean("clouds.enabled"))
+			return;
 		float gradient = world.getRainGradient(tickDelta);
 		float thunderGradient = world.getThunderGradient(tickDelta);
 		
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		if(thunderGradient > 0f && thunderGradient < 1f)
 		{
-			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/thunder_clouds.png"));
+			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,"textures/environment/thunder_clouds" + (int)(thunderGradient * 3) + ".png"));
 		}
 		else if(gradient > 0f && gradient < 1f)
 		{
@@ -248,7 +250,7 @@ public abstract class MixinWorldRenderer
 		else if(gradient > 0f)
 		{
 			RenderSystem.setShaderTexture(0, new Identifier(WeatherEffects.MODID,
-					thunderGradient > 0 ? "textures/environment/thunder_clouds.png" : "textures/environment/rain_clouds2.png"));
+					thunderGradient > 0 ? "textures/environment/thunder_clouds2.png" : "textures/environment/rain_clouds2.png"));
 		}
 		else
 		{

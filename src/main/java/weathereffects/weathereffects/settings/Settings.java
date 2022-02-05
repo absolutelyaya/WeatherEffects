@@ -77,6 +77,8 @@ public class Settings
 	public static final BooleanSetting SANDSTORM_GROUND_DUST = new BooleanSetting("sandstorm.ground-dust", true)
 			.setRequirements(List.of(SANDSTORM));
 	
+	//Clouds
+	public static final BooleanSetting CLOUDS = new BooleanSetting("clouds.enabled", true);
 	
 	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	
@@ -90,6 +92,7 @@ public class Settings
 		SETTINGS.put(Category.SANDSTORM, List.of(SANDSTORM, SANDSTORM_DUST_AMOUNT, SANDSTORM_WIND_STRENGTH, SANDSTORM_WIND_CHANGE_RATE,
 				SANDSTORM_WIND_CHANGE_SPEED, SANDSTORM_WIND_DUST, SANDSTORM_WIND_DUST_LIFETIME, SANDSTORM_WIND_DUST_ROTSPEED,
 				SANDSTORM_WIND_DUST_GRAVITY, SANDSTORM_GROUND_DUST));
+		SETTINGS.put(Category.CLOUDS, List.of(CLOUDS));
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);

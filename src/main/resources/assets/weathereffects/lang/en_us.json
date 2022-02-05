@@ -39,6 +39,8 @@
   "setting.weathereffects.sandstorm.ground-dust": "Ground Dust Particle",
 
   "screen.weatherEffects.options.clouds.title": "Cloud Options",
+  "setting.weathereffects.clouds.enabled": "Custom Clouds",
+
   "screen.weatherEffects.options.fog.title": "Fog Options",
   "screen.weatherEffects.options.stars.title": "Star Options",
   "screen.weatherEffects.options.gamepaused": "Pause",
