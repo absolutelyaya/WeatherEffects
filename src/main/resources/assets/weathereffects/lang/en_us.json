@@ -1,6 +1,8 @@
 {
   "screen.weatherEffects.options.main.title": "Weather Effects Mod Options",
   "setting.weathereffects.general.particle-amount": "Particle Amount",
+  "setting.weathereffects.test.boolean": "Test Boolean",
+  "setting.weathereffects.test.slider": "Test Slider",
 
   "screen.weatherEffects.options.rain.title": "Rain Options",
   "setting.weathereffects.rain.enabled": "Particle Rain",
@@ -42,8 +44,26 @@
   "setting.weathereffects.clouds.enabled": "Custom Clouds",
 
   "screen.weatherEffects.options.fog.title": "Fog Options",
+  "setting.weathereffects.fog.enabled": "Custom Fog",
+
   "screen.weatherEffects.options.stars.title": "Star Options",
   "screen.weatherEffects.options.gamepaused": "Pause",
   "screen.weatherEffects.options.showbg": "Background",
-  "screen.weatherEffects.options.empty": "This is currently empty..."
+  "screen.weatherEffects.options.empty": "This is currently empty...",
+
+  "screen.weathereffects.fog.biome.taiga": "Taiga Fog",
+  "screen.weathereffects.fog.biome.extreme-hills": "Extreme Hills Fog",
+  "screen.weathereffects.fog.biome.jungle": "Jungle Fog",
+  "screen.weathereffects.fog.biome.mesa": "Mesa Fog",
+  "screen.weathereffects.fog.biome.plains": "Plains Fog",
+  "screen.weathereffects.fog.biome.savanna": "Savanna Fog",
+  "screen.weathereffects.fog.biome.icy": "Icy biomes Fog",
+  "screen.weathereffects.fog.biome.beach": "Beach Fog",
+  "screen.weathereffects.fog.biome.forest": "Forest Fog",
+  "screen.weathereffects.fog.biome.ocean": "Ocean Fog",
+  "screen.weathereffects.fog.biome.desert": "Desert Fog",
+  "screen.weathereffects.fog.biome.river": "River Fog",
+  "screen.weathereffects.fog.biome.swamp": "Swamp Fog",
+  "screen.weathereffects.fog.biome.mushroom": "Mushroom biomes Fog",
+  "screen.weathereffects.fog.biome.mountain": "Mountain Fog"
 }

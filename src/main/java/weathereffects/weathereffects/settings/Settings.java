@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +81,15 @@ public class Settings
 	//Clouds
 	public static final BooleanSetting CLOUDS = new BooleanSetting("clouds.enabled", true);
 	
+	//Fog
+	public static final BooleanSetting FOG = new BooleanSetting("fog.enabled", true);
+	public static final PerEntrySetting<Biome.Category> FOG_PER_BIOME = new PerEntrySetting<>("fog.biome", Biome.Category.class,
+			List.of(
+					new BooleanSetting("test.boolean", true),
+					new SliderSetting("test.slider", 1.0, 0.0, 2.0, 0.01f)
+			),
+			List.of(Biome.Category.THEEND, Biome.Category.NONE, Biome.Category.NETHER, Biome.Category.UNDERGROUND));
+	
 	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	
 	static
@@ -93,6 +103,7 @@ public class Settings
 				SANDSTORM_WIND_CHANGE_SPEED, SANDSTORM_WIND_DUST, SANDSTORM_WIND_DUST_LIFETIME, SANDSTORM_WIND_DUST_ROTSPEED,
 				SANDSTORM_WIND_DUST_GRAVITY, SANDSTORM_GROUND_DUST));
 		SETTINGS.put(Category.CLOUDS, List.of(CLOUDS));
+		SETTINGS.put(Category.FOG, List.of(FOG, FOG_PER_BIOME));
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);

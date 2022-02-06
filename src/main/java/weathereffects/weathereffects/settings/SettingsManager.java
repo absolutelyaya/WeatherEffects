@@ -69,8 +69,11 @@ public class SettingsManager
 				if(Settings.SETTINGS.get(cat) != null)
 					for (AbstractSetting setting : Settings.SETTINGS.get(cat))
 					{
-						bw.write(setting.serialize());
-						bw.newLine();
+						if(!setting.getClass().equals(PerEntrySetting.class))
+						{
+							bw.write(setting.serialize());
+							bw.newLine();
+						}
 					}
 			}
 			bw.close();

@@ -1,6 +1,5 @@
 package weathereffects.weathereffects.settings;
 
-import com.mojang.datafixers.types.Type;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
