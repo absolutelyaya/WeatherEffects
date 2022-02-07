@@ -12,11 +12,11 @@ public class PerEntryOption<E extends Enum<E>> extends Option
 {
 	public final Class<E> enumClass;
 	
-	private final List<SettingsOption> settings;
+	private final List<AbstractSetting> settings;
 	private final String id;
 	private final List<E> excludedEntries;
 	
-	public PerEntryOption(String id, Class<E> enumClass, List<SettingsOption> settings, List<E> excludedEntries)
+	public PerEntryOption(String id, Class<E> enumClass, List<AbstractSetting> settings, List<E> excludedEntries)
 	{
 		super(id);
 		this.enumClass = enumClass;

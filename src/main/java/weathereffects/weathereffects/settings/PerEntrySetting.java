@@ -9,13 +9,11 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 {
 	public final Class<E> enumClass;
 	
-	private final List<SettingsOption> settings;
+	private final List<AbstractSetting> settings;
 	private final String id;
 	private final List<E> excludedEntries;
 	
-	//TODO: Save the settings values
-	
-	public PerEntrySetting(String id, Class<E> enumClass, List<SettingsOption> settings, List<E> excludedEntries)
+	public PerEntrySetting(String id, Class<E> enumClass, List<AbstractSetting> settings, List<E> excludedEntries)
 	{
 		super(id);
 		this.enumClass = enumClass;
@@ -33,7 +31,19 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 	@Override
 	public String serialize()
 	{
-		return null;
+		StringBuilder sb = new StringBuilder("PES#" + id + ":");
+		for (E entry : enumClass.getEnumConstants())
+		{
+			if(!excludedEntries.contains(entry))
+			{
+				sb.append("\n\t").append(entry.name()).append(":");
+				for (AbstractSetting setting : settings)
+				{
+					sb.append("\n\t\t").append(setting.serialize());
+				}
+			}
+		}
+		return sb.toString();
 	}
 	
 	@Override

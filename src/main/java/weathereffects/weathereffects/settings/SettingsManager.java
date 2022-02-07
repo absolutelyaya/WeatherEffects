@@ -34,23 +34,23 @@ public class SettingsManager
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				for (String line : br.lines().toList())
 				{
-					if(line.contains("#") && line.contains(":"))
+					if(line.contains("#") && line.contains(":") && !line.startsWith("\t"))
 					{
 						String[] type = line.split("#");
 						String[] id = type[1].split(":");
-						String value = id[1];
 						switch(type[0])
 						{
-							case "E" -> SettingsStorage.setEnum(id[0], EnumSetting.deserialize(value, id[0]));
-							case "B" -> SettingsStorage.setBoolean(id[0], Boolean.parseBoolean(value));
-							case "D" -> SettingsStorage.setDouble(id[0], Double.parseDouble(value));
+							case "E" -> SettingsStorage.setEnum(id[0], EnumSetting.deserialize(id[1], id[0]));
+							case "B" -> SettingsStorage.setBoolean(id[0], Boolean.parseBoolean(id[1]));
+							case "D" -> SettingsStorage.setDouble(id[0], Double.parseDouble(id[1]));
+							//TODO: load PerEntrySettings
 						}
 					}
 				}
 				br.close();
 			}
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			System.err.println("Failed to load Weather Effects settings file. Reverting to defaults");
 			e.printStackTrace();
@@ -69,11 +69,8 @@ public class SettingsManager
 				if(Settings.SETTINGS.get(cat) != null)
 					for (AbstractSetting setting : Settings.SETTINGS.get(cat))
 					{
-						if(!setting.getClass().equals(PerEntrySetting.class))
-						{
-							bw.write(setting.serialize());
-							bw.newLine();
-						}
+						bw.write(setting.serialize());
+						bw.newLine();
 					}
 			}
 			bw.close();
