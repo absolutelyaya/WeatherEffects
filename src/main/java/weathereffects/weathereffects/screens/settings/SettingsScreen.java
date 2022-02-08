@@ -44,6 +44,7 @@ public class SettingsScreen extends AbstractWeatherSettingsScreen
 		super.init();
 		if(client == null)
 			return;
+		//TODO: add fading to top and bottom List entries to make them dis-/appear more elegantly
 		this.list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 60, 25);
 		List<Option> options = new ArrayList<>();
 		if(category != null)

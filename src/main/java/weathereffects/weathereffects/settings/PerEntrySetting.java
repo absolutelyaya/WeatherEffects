@@ -67,7 +67,7 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 	@Override
 	public Option asOption()
 	{
-		return new PerEntryOption<>(id, enumClass, settings, excludedEntries);
+		return new PerEntryOption<>(id, enumClass, settings, excludedEntries, requirements);
 	}
 	
 	@Override

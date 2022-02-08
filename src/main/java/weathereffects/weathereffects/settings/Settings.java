@@ -88,8 +88,9 @@ public class Settings
 			List.of(
 					new BooleanSetting("test.boolean", true),
 					new SliderSetting("test.slider", 1.0, 0.0, 2.0, 0.01f)
-			),
-			List.of(Biome.Category.THEEND, Biome.Category.NONE, Biome.Category.NETHER, Biome.Category.UNDERGROUND));
+			), //TODO: replace with actual settings
+			List.of(Biome.Category.THEEND, Biome.Category.NONE, Biome.Category.NETHER, Biome.Category.UNDERGROUND))
+			.setRequirements(List.of(FOG));
 	
 	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	

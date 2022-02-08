@@ -15,14 +15,16 @@ public class PerEntryOption<E extends Enum<E>> extends Option
 	private final List<AbstractSetting> settings;
 	private final String id;
 	private final List<E> excludedEntries;
+	private final List<BooleanSetting> requirements;
 	
-	public PerEntryOption(String id, Class<E> enumClass, List<AbstractSetting> settings, List<E> excludedEntries)
+	public PerEntryOption(String id, Class<E> enumClass, List<AbstractSetting> settings, List<E> excludedEntries, List<BooleanSetting> requirements)
 	{
 		super(id);
 		this.enumClass = enumClass;
 		this.settings = settings;
 		this.id = id;
 		this.excludedEntries = excludedEntries;
+		this.requirements = requirements;
 	}
 	
 	public Option[] getOptions(Enum<?> entry)
@@ -44,7 +46,7 @@ public class PerEntryOption<E extends Enum<E>> extends Option
 		{
 			if(!excludedEntries.contains(entry))
 				entries.add(new SubOptionsButtonOption(TranslationUtil.getTranslationKey("screen",
-						id + "." + entry.name()).toLowerCase().replace("_", "-"), this, entry));
+						id + "." + entry.name()).toLowerCase().replace("_", "-"), this, entry, requirements));
 		}
 		return entries.toArray(Option[]::new);
 	}
