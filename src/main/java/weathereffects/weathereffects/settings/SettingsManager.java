@@ -6,6 +6,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import weathereffects.weathereffects.WeatherEffects;
 
 import java.io.*;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class SettingsManager
@@ -32,18 +33,31 @@ public class SettingsManager
 			if(file.exists())
 			{
 				BufferedReader br = new BufferedReader(new FileReader(file));
-				for (String line : br.lines().toList())
+				List<String> lines = br.lines().toList();
+				for (int i = 0; i < lines.size(); i++)
 				{
+					String line = lines.get(i);
 					if(line.contains("#") && line.contains(":") && !line.startsWith("\t"))
 					{
-						String[] type = line.split("#");
-						String[] id = type[1].split(":");
-						switch(type[0])
+						String[] segments = line.split("[#:]");
+						if(segments.length == 3)
 						{
-							case "E" -> SettingsStorage.setEnum(id[0], EnumSetting.deserialize(id[1], id[0]));
-							case "B" -> SettingsStorage.setBoolean(id[0], Boolean.parseBoolean(id[1]));
-							case "D" -> SettingsStorage.setDouble(id[0], Double.parseDouble(id[1]));
-							//TODO: load PerEntrySettings
+							switch (segments[0])
+							{
+								case "E" -> SettingsStorage.setEnum(segments[1], EnumSetting.deserialize(segments[2], segments[1]));
+								case "B" -> SettingsStorage.setBoolean(segments[1], Boolean.parseBoolean(segments[2]));
+								case "D" -> SettingsStorage.setDouble(segments[1], Double.parseDouble(segments[2]));
+								case "PES" -> {
+									StringBuilder data = new StringBuilder();
+									for (int ii = i + 1; ii < i + 1 + Integer.parseInt(segments[2]); ii++)
+									{
+										data.append(lines.get(ii)
+												.replace("\t\t", data.toString().endsWith("=") ? "" : "|")
+												.replace("\t", i + 1 == ii ? "" : "+"));
+									}
+									SettingsStorage.setPerEntrySetting(data.toString());
+								}
+							}
 						}
 					}
 				}

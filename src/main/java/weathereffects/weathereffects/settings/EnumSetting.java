@@ -21,21 +21,32 @@ public class EnumSetting<E extends Enum<E>> extends AbstractSetting
 		SettingsStorage.setEnum(id, defaultValue);
 	}
 	
+	public EnumSetting(String id, E defaultValue, String name)
+	{
+		super(id, name);
+		this.enumClass = defaultValue.getDeclaringClass();
+		this.defaultValue = defaultValue;
+	}
+	
 	@Override
 	public Text getButtonText()
 	{
 		return new TranslatableText(translationKey, SettingsStorage.getEnum(id, enumClass).name());
 	}
 	
-	public E getDefaultValue()
+	public String getDefaultValue()
 	{
-		return defaultValue;
+		return defaultValue.name();
 	}
 	
 	@Override
-	public String serialize()
-	{
+	public String serialize() {
 		return "E#" + id + ":" + enumClass.getName() + "@" + SettingsStorage.getEnum(id, enumClass).toString();
+	}
+	
+	@Override
+	public String serialize(String prefix) {
+		return "E#" + prefix + "." + id + ":" + enumClass.getName() + "@" + SettingsStorage.getEnum(prefix + "." + id, enumClass).toString();
 	}
 	
 	public static Enum<?> deserialize(String data, String id)
@@ -65,5 +76,16 @@ public class EnumSetting<E extends Enum<E>> extends AbstractSetting
 		return CyclingOption.create(translationKey, defaultValue.getClass().getEnumConstants(),
 				value -> getValueText(this, value), ignored -> SettingsStorage.getEnum(id, enumClass),
 				(ignored, option, value) -> SettingsStorage.cycleEnum(id, enumClass));
+	}
+	
+	public Class<? extends Enum> getEnumClass()
+	{
+		return enumClass;
+	}
+	
+	@Override
+	public SettingsOption addIDPrefix(String prefix)
+	{
+		return new EnumSetting<>(prefix + "." + id, defaultValue, id);
 	}
 }

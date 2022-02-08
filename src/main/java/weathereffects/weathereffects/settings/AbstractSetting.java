@@ -21,9 +21,17 @@ public abstract class AbstractSetting implements SettingsOption
 		this.translationKey = TranslationUtil.getTranslationKey("setting", id);
 	}
 	
+	public AbstractSetting(String id, String name)
+	{
+		this.id = id;
+		this.translationKey = TranslationUtil.getTranslationKey("setting", name);
+	}
+	
 	public abstract Text getButtonText();
 	
 	public abstract String serialize();
+	
+	public abstract String serialize(String prefix);
 	
 	public <T extends AbstractSetting>T setRequirements(List<BooleanSetting> bools)
 	{
@@ -46,4 +54,6 @@ public abstract class AbstractSetting implements SettingsOption
 	{
 		return null;
 	}
+	
+	public abstract String getDefaultValue();
 }

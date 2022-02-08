@@ -31,15 +31,33 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 	@Override
 	public String serialize()
 	{
-		StringBuilder sb = new StringBuilder("PES#" + id + ":");
+		StringBuilder sb = new StringBuilder("PES#" + id + ":" + ((enumClass.getEnumConstants().length - excludedEntries.size()) * (1 + settings.size())));
 		for (E entry : enumClass.getEnumConstants())
 		{
 			if(!excludedEntries.contains(entry))
 			{
-				sb.append("\n\t").append(entry.name()).append(":");
+				sb.append("\n\t").append(entry.name()).append("=");
 				for (AbstractSetting setting : settings)
 				{
-					sb.append("\n\t\t").append(setting.serialize());
+					sb.append("\n\t\t").append(setting.serialize(entry.name().toLowerCase().replace("_", "-")));
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	@Override
+	public String serialize(String prefix)
+	{
+		StringBuilder sb = new StringBuilder("PES#" + prefix + "." + id + ":" + ((enumClass.getEnumConstants().length - excludedEntries.size()) * (1 + settings.size())));
+		for (E entry : enumClass.getEnumConstants())
+		{
+			if(!excludedEntries.contains(entry))
+			{
+				sb.append("\n\t").append(entry.name()).append("=");
+				for (AbstractSetting setting : settings)
+				{
+					sb.append("\n\t\t").append(setting.serialize(entry.name().toLowerCase().replace("_", "-")));
 				}
 			}
 		}
@@ -50,5 +68,31 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 	public Option asOption()
 	{
 		return new PerEntryOption<>(id, enumClass, settings, excludedEntries);
+	}
+	
+	@Override
+	public String getDefaultValue()
+	{
+		StringBuilder data = new StringBuilder();
+		for(E entry : enumClass.getEnumConstants())
+		{
+			if(!excludedEntries.contains(entry))
+			{
+				for (AbstractSetting setting : settings)
+				{
+					data.append(entry.name()).append("=").append(entry.name().toLowerCase().replace("_", "-"))
+							.append(setting.id).append(":").append(setting.getDefaultValue()).append("|");
+				}
+				data.setCharAt(data.length() - 1, '+');
+			}
+		}
+		data.setLength(data.length() - 1);
+		return data.toString();
+	}
+	
+	@Override
+	public SettingsOption addIDPrefix(String prefix)
+	{
+		return new PerEntrySetting<>(prefix + "." + id, enumClass, settings, excludedEntries);
 	}
 }

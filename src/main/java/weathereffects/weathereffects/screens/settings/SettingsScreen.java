@@ -36,7 +36,6 @@ public class SettingsScreen extends AbstractWeatherSettingsScreen
 		this.category = null;
 		this.settings = settings;
 		this.entry = entry;
-		System.out.println("creation");
 	}
 	
 	@Override

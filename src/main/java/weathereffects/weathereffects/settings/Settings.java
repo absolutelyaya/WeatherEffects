@@ -7,6 +7,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -121,6 +122,7 @@ public class Settings
 		return options.toArray(Option[]::new);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void applyDefaults()
 	{
 		for(Category cat : Category.values())
@@ -130,11 +132,13 @@ public class Settings
 				for(AbstractSetting as : SETTINGS.get(cat))
 				{
 					if(as instanceof EnumSetting<?>)
-						SettingsStorage.setEnum(as.id, ((EnumSetting<?>)as).getDefaultValue());
+						SettingsStorage.setEnum(as.id, Enum.valueOf(((EnumSetting<?>)as).getEnumClass(), as.getDefaultValue()));
 					else if(as instanceof BooleanSetting)
-						SettingsStorage.setBoolean(as.id, ((BooleanSetting)as).getDefaultValue());
+						SettingsStorage.setBoolean(as.id, Boolean.parseBoolean(as.getDefaultValue()));
 					else if(as instanceof SliderSetting)
-						SettingsStorage.setDouble(as.id, ((SliderSetting)as).getDefaultValue());
+						SettingsStorage.setDouble(as.id, Double.parseDouble(as.getDefaultValue()));
+					else if(as instanceof PerEntrySetting<?>)
+						SettingsStorage.setPerEntrySetting(as.getDefaultValue());
 				}
 			}
 		}

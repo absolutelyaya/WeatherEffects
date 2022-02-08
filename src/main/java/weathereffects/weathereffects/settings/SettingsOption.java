@@ -16,4 +16,6 @@ public interface SettingsOption
 	SliderSetting setSoftMax(SliderSetting max);
 	
 	SliderSetting setSoftMin(SliderSetting min);
+	
+	SettingsOption addIDPrefix(String prefix);
 }

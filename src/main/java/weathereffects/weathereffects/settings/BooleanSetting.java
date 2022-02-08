@@ -20,9 +20,15 @@ public class BooleanSetting extends AbstractSetting
 		SettingsStorage.setBoolean(id, defaultValue);
 	}
 	
-	public boolean getDefaultValue()
+	public BooleanSetting(String id, boolean defaultValue, String name)
 	{
-		return defaultValue;
+		super(id, name);
+		this.defaultValue = defaultValue;
+	}
+	
+	public String getDefaultValue()
+	{
+		return Boolean.toString(defaultValue);
 	}
 	
 	@Override
@@ -38,10 +44,21 @@ public class BooleanSetting extends AbstractSetting
 	}
 	
 	@Override
+	public String serialize(String prefix) {
+		return "B#" + prefix + "." + id + ":" + SettingsStorage.getBoolean(prefix + "." + id);
+	}
+	
+	@Override
 	public Option asOption()
 	{
 		return new YayCycler(translationKey,
 				ignored -> SettingsStorage.getBoolean(id), (ignored, option, value) -> SettingsStorage.setBoolean(id, value),
 				CyclingButtonWidget::onOffBuilder, requirements);
+	}
+	
+	@Override
+	public SettingsOption addIDPrefix(String prefix)
+	{
+		return new BooleanSetting(prefix + "." + id, defaultValue, id);
 	}
 }

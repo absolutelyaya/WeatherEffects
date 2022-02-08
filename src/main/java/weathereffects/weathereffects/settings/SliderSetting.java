@@ -28,6 +28,17 @@ public class SliderSetting extends AbstractSetting
 		SettingsStorage.setDouble(id, defaultValue);
 	}
 	
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, String name)
+	{
+		super(id, name);
+		this.defaultValue = defaultValue;
+		this.min = min;
+		this.max = max;
+		this.step = step;
+		this.displayPercent = true;
+		this.decimals = 0;
+	}
+	
 	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals)
 	{
 		super(id);
@@ -35,14 +46,25 @@ public class SliderSetting extends AbstractSetting
 		this.min = min;
 		this.max = max;
 		this.step = step;
-		this.displayPercent = false;
+		this.displayPercent = decimals == 0;
 		this.decimals = decimals;
 		SettingsStorage.setDouble(id, defaultValue);
 	}
 	
-	public double getDefaultValue()
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals, String name)
 	{
-		return defaultValue;
+		super(id, name);
+		this.defaultValue = defaultValue;
+		this.min = min;
+		this.max = max;
+		this.step = step;
+		this.displayPercent = decimals == 0;
+		this.decimals = decimals;
+	}
+	
+	public String getDefaultValue()
+	{
+		return Double.toString(defaultValue);
 	}
 	
 	@Override
@@ -58,6 +80,11 @@ public class SliderSetting extends AbstractSetting
 	public String serialize()
 	{
 		return "D#" + id + ":" + SettingsStorage.getDouble(id);
+	}
+	
+	@Override
+	public String serialize(String prefix) {
+		return "D#" + prefix + "." + id + ":" + SettingsStorage.getDouble(prefix + "." + id);
 	}
 	
 	@Override
@@ -79,5 +106,11 @@ public class SliderSetting extends AbstractSetting
 	{
 		this.softMax = max;
 		return this;
+	}
+	
+	@Override
+	public SettingsOption addIDPrefix(String prefix)
+	{
+		return new SliderSetting(prefix + "." + id, defaultValue, min, max, step, decimals, id);
 	}
 }

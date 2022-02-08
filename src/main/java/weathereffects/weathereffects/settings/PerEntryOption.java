@@ -32,7 +32,7 @@ public class PerEntryOption<E extends Enum<E>> extends Option
 		List<Option> options = new ArrayList<>();
 		for (SettingsOption setting : settings)
 		{
-			options.add(setting.asOption());
+			options.add(setting.addIDPrefix(entry.name().toLowerCase().replace("_", "-")).asOption());
 		}
 		return options.toArray(Option[]::new);
 	}
