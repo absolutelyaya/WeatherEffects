@@ -3,6 +3,7 @@ package weathereffects.weathereffects.settings;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 public class YayCheckbox extends CheckboxWidget
@@ -29,5 +30,11 @@ public class YayCheckbox extends CheckboxWidget
 		if(showBackground)
 			fill(matrices, x, y - 3, x + length + 6, y + 10, -1072689136);
 		super.renderButton(matrices, mouseX, mouseY, delta);
+	}
+	
+	@Override
+	public Text getMessage()
+	{
+		return super.getMessage().copy().setStyle(Style.EMPTY.withStrikethrough(!active));
 	}
 }

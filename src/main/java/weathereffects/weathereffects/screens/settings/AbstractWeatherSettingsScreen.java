@@ -53,8 +53,8 @@ public abstract class AbstractWeatherSettingsScreen extends Screen
 			OptionsScreen.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 15, 0xFFFFFF);
 			if(client.world != null)
 			{
-				if(!client.world.isClient)
-					pauseCheckBox.active = false;
+				if(client.getCurrentServerEntry() != null)
+					pauseCheckBox.active = client.getCurrentServerEntry().isLocal();
 				if(pauseCheckBox.isChecked() != paused)
 					paused = pauseCheckBox.isChecked();
 				if(bgCheckBox.isChecked() != showBG)
