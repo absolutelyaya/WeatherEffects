@@ -9,6 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import weathereffects.weathereffects.settings.PerEntryOption;
 import weathereffects.weathereffects.settings.Settings;
+import weathereffects.weathereffects.settings.YayButtonList;
 import weathereffects.weathereffects.utilities.TranslationUtil;
 
 import java.util.ArrayList;
@@ -44,8 +45,7 @@ public class SettingsScreen extends AbstractWeatherSettingsScreen
 		super.init();
 		if(client == null)
 			return;
-		//TODO: add fading to top and bottom List entries to make them dis-/appear more elegantly
-		this.list = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 60, 25);
+		this.list = new YayButtonList(this.client, this.width, this.height, 40, this.height - 80, 25);
 		List<Option> options = new ArrayList<>();
 		if(category != null)
 		{
