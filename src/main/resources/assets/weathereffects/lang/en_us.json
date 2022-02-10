@@ -3,6 +3,8 @@
   "setting.weathereffects.general.particle-amount": "Particle Amount",
   "setting.weathereffects.test.boolean": "Test Boolean",
   "setting.weathereffects.test.slider": "Test Slider",
+  "popup.weathereffects.reset-slider": "Slider reset to default!",
+  "popup.weathereffects.restricted-slider": "Slider restricted by '%s'!",
 
   "screen.weatherEffects.options.rain.title": "Rain Options",
   "setting.weathereffects.rain.enabled": "Particle Rain",
@@ -46,7 +48,7 @@
   "screen.weatherEffects.options.fog.title": "Fog Options",
   "setting.weathereffects.fog.enabled": "Custom Fog",
 
-  "screen.weatherEffects.options.stars.title": "Star Options",
+  "screen.weatherEffects.options.stars.title": "§kStar Options",
   "screen.weatherEffects.options.gamepaused": "Pause",
   "screen.weatherEffects.options.showbg": "Background",
   "screen.weatherEffects.options.empty": "This is currently empty...",

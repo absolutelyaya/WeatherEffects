@@ -1,9 +1,16 @@
 package weathereffects.weathereffects.screens.widgets;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.DoubleOptionSliderWidget;
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 import weathereffects.weathereffects.settings.SettingsStorage;
 import weathereffects.weathereffects.settings.SliderSetting;
@@ -16,6 +23,9 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 	private final DoubleOption option;
 	private final SliderSetting softMin, softMax;
 	private final double defaultValue;
+	
+	private float popupOpacity;
+	private Text popupMessage;
 	
 	public YaySliderWidget(GameOptions gameOptions, int x, int y, int width, int height, DoubleOption option, List<OrderedText> orderedTooltip, SliderSetting softMin, SliderSetting softMax, double defaultValue)
 	{
@@ -31,9 +41,19 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 	{
 		double val = this.option.getValue(this.value);
 		if(softMin != null)
-			val = Double.max(SettingsStorage.getDouble(softMin.id) + ((YaySlider)option).getStep(), val);
+		{
+			double min = SettingsStorage.getDouble(softMin.id) + ((YaySlider) option).getStep();
+			if(val < min - ((YaySlider) option).getStep())
+				updatePopup(new TranslatableText("popup.weathereffects.restricted-slider", new TranslatableText(softMin.translationKey)), true);
+			val = Double.max(min, val);
+		}
 		if(softMax != null)
-			val = Double.min(SettingsStorage.getDouble(softMax.id) - ((YaySlider)option).getStep(), val);
+		{
+			double max = SettingsStorage.getDouble(softMax.id) - ((YaySlider) option).getStep();
+			if(val > max + ((YaySlider) option).getStep())
+				updatePopup(new TranslatableText("popup.weathereffects.restricted-slider", new TranslatableText(softMax.translationKey)), true);
+			val = Double.min(max, val);
+		}
 		this.value = (val - option.getMin()) / (option.getMax() - option.getMin());
 		this.option.set(this.options, val);
 		this.options.write();
@@ -61,6 +81,34 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 		this.value = (defaultValue - option.getMin()) / (option.getMax() - option.getMin());
 		applyValue();
 		updateMessage();
-		onRelease(0, 0); //TODO: Popup for resetting sliders
+		onRelease(0, 0);
+		updatePopup(new TranslatableText("popup.weathereffects.reset-slider"), false);
+	}
+	
+	void updatePopup(Text popup, boolean force)
+	{
+		if(popupOpacity <= 0f || force || popup.equals(popupMessage))
+		{
+			popupOpacity = 2f;
+			popupMessage = popup;
+		}
+	}
+	
+	@Override
+	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta)
+	{
+		super.renderButton(matrices, mouseX, mouseY, delta);
+		if(popupOpacity > 0f)
+		{
+			TextRenderer tr = MinecraftClient.getInstance().textRenderer;
+			int length = tr.getWidth(popupMessage);
+			int x = this.x + this.width / 2;
+			int y = this.y - this.height / 2;
+			fill(matrices, x - length / 2 - 3, y - 3, x + length / 2 + 3, y + 10,
+					MathHelper.ceil(Math.min(popupOpacity + 0.025f, 1f) / 2f * 255f) << 24);
+			ClickableWidget.drawCenteredText(matrices, tr,
+					popupMessage, x, y, 0xffffff | MathHelper.ceil(Math.min(popupOpacity + 0.025f, 1f) * 255f) << 24);
+			popupOpacity -= delta / 10f;
+		}
 	}
 }

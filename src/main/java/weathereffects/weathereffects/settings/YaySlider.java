@@ -35,7 +35,6 @@ public class YaySlider extends DoubleOption
 		this.defaultValue = defaultValue;
 	}
 	
-	
 	@Override
 	public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
 		List<OrderedText> list = tooltipsGetter.apply(MinecraftClient.getInstance());
