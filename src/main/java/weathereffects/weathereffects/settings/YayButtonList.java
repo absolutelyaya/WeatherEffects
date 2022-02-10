@@ -53,6 +53,8 @@ public class YayButtonList extends ButtonListWidget
 					((ClickableWidget)e).setAlpha(alpha);
 				}
 			}
+			mouseX = (mouseX > this.left && mouseX < this.right) ? mouseX : -1;
+			mouseY = (mouseY > this.top && mouseY < this.bottom) ? mouseY : -1;
 			entry.render(matrices, index, entryTop, left, entryWidth, entryHeight, mouseX, mouseY,
 					Objects.equals(this.hoveredEntry, entry), delta);
 		}

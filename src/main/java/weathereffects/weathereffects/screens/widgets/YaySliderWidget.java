@@ -1,5 +1,6 @@
 package weathereffects.weathereffects.screens.widgets;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -110,5 +111,14 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 					popupMessage, x, y, 0xffffff | MathHelper.ceil(Math.min(popupOpacity + 0.025f, 1f) * 255f) << 24);
 			popupOpacity -= delta / 10f;
 		}
+	}
+	
+	@Override
+	protected void renderBackground(MatrixStack matrices, MinecraftClient client, int mouseX, int mouseY) {
+		RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
+		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, alpha);
+		int i = (active && visible ? (this.isHovered() ? 2 : 1) * 20 : 0);
+		this.drawTexture(matrices, this.x + (int)(this.value * (double)(this.width - 8)), this.y, 0, 46 + i, 4, 20);
+		this.drawTexture(matrices, this.x + (int)(this.value * (double)(this.width - 8)) + 4, this.y, 196, 46 + i, 4, 20);
 	}
 }
