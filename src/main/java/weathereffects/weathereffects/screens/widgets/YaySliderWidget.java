@@ -88,7 +88,7 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 	
 	void updatePopup(Text popup, boolean force)
 	{
-		if(popupOpacity <= 0f || force || popup.equals(popupMessage))
+		if(popupOpacity <= 1.9f || force || popup.equals(popupMessage))
 		{
 			popupOpacity = 2f;
 			popupMessage = popup;

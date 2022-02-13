@@ -5,12 +5,14 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonListWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Objects;
 
 public class YayButtonList extends ButtonListWidget
 {
 	private ButtonEntry hoveredEntry;
+	private double targetScroll;
 	
 	public YayButtonList(MinecraftClient minecraftClient, int i, int j, int k, int l, int m)
 	{
@@ -27,6 +29,9 @@ public class YayButtonList extends ButtonListWidget
 	@Override
 	protected void renderList(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta)
 	{
+		if(targetScroll > -1)
+			setScrollAmount(MathHelper.lerp(delta / 2f, getScrollAmount(), targetScroll));
+		
 		int i = this.getEntryCount();
 		for (int index = 0; index < i; ++index)
 		{
@@ -58,5 +63,22 @@ public class YayButtonList extends ButtonListWidget
 			entry.render(matrices, index, entryTop, left, entryWidth, entryHeight, mouseX, mouseY,
 					Objects.equals(this.hoveredEntry, entry), delta);
 		}
+	}
+	
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double amount)
+	{
+		if(targetScroll == -1.0)
+			targetScroll = MathHelper.clamp(getScrollAmount() - amount * (double)this.itemHeight / 2.0, 0.0, getMaxScroll());
+		else
+			targetScroll = MathHelper.clamp(targetScroll - amount * (double)this.itemHeight / 2.0, 0.0, getMaxScroll());
+		return true;
+	}
+	
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
+	{
+		targetScroll = -1.0;
+		return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
 	}
 }
