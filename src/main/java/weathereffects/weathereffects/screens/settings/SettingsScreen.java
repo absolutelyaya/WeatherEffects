@@ -33,7 +33,8 @@ public class SettingsScreen extends AbstractWeatherSettingsScreen
 	
 	public SettingsScreen(Screen parent, PerEntryOption<?> settings, Enum<?> entry)
 	{
-		super(new TranslatableText(TranslationUtil.getTranslationKey("screen", "fog.biome." + entry.name()).toLowerCase()), parent);
+		super(new TranslatableText(TranslationUtil.getTranslationKey("screen",
+				"fog.biome." + entry.name()).toLowerCase().replace("_", "-")), parent);
 		this.category = null;
 		this.settings = settings;
 		this.entry = entry;
