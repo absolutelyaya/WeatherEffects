@@ -15,11 +15,12 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 	
 	public PerEntrySetting(String id, Class<E> enumClass, List<AbstractSetting> settings, List<E> excludedEntries)
 	{
-		super(id);
+		super(id, false);
 		this.enumClass = enumClass;
 		this.settings = settings;
 		this.id = id;
 		this.excludedEntries = excludedEntries;
+		setDefault();
 	}
 	
 	@Override
@@ -87,7 +88,29 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 			}
 		}
 		data.setLength(data.length() - 1);
+		System.out.println(data);
 		return data.toString();
+	}
+	
+	@Override
+	public void setDefault()
+	{
+		for (E entry : enumClass.getEnumConstants())
+		{
+			if(!excludedEntries.contains(entry))
+			{
+				for(AbstractSetting setting : settings)
+				{
+					setting.setDefault(entry.name().toLowerCase().replace("_", "-"));
+				}
+			}
+		}
+	}
+	
+	@Override
+	public void setDefault(String prefix)
+	{
+		setDefault();
 	}
 	
 	@Override

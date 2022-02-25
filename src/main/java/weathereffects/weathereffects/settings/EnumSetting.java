@@ -13,19 +13,22 @@ public class EnumSetting<E extends Enum<E>> extends AbstractSetting
 	private final E defaultValue;
 	private final Class<E> enumClass;
 	
-	public EnumSetting(String id, E defaultValue)
+	public EnumSetting(String id, E defaultValue, boolean setDefault)
 	{
-		super(id);
+		super(id, setDefault);
 		this.enumClass = defaultValue.getDeclaringClass();
 		this.defaultValue = defaultValue;
-		SettingsStorage.setEnum(id, defaultValue);
+		if(setDefault)
+			setDefault();
 	}
 	
-	public EnumSetting(String id, E defaultValue, String name)
+	public EnumSetting(String id, E defaultValue, String name, boolean setDefault)
 	{
-		super(id, name);
+		super(id, name, setDefault);
 		this.enumClass = defaultValue.getDeclaringClass();
 		this.defaultValue = defaultValue;
+		if(setDefault)
+			setDefault();
 	}
 	
 	@Override
@@ -37,6 +40,18 @@ public class EnumSetting<E extends Enum<E>> extends AbstractSetting
 	public String getDefaultValue()
 	{
 		return defaultValue.name();
+	}
+	
+	@Override
+	public void setDefault()
+	{
+		SettingsStorage.setEnum(id, defaultValue);
+	}
+	
+	@Override
+	public void setDefault(String prefix)
+	{
+		SettingsStorage.setEnum(prefix + "." + id, defaultValue);
 	}
 	
 	@Override
@@ -86,6 +101,6 @@ public class EnumSetting<E extends Enum<E>> extends AbstractSetting
 	@Override
 	public SettingsOption addIDPrefix(String prefix)
 	{
-		return new EnumSetting<>(prefix + "." + id, defaultValue, id);
+		return new EnumSetting<>(prefix + "." + id, defaultValue, id, setDefault);
 	}
 }

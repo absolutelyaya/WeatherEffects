@@ -13,18 +13,23 @@ public abstract class AbstractSetting implements SettingsOption
 {
 	public String id, translationKey;
 	
+	protected final boolean setDefault;
 	protected List<BooleanSetting> requirements = new ArrayList<>();
 	
-	public AbstractSetting(String id)
+	public AbstractSetting(String id, boolean setDefault)
 	{
 		this.id = id;
 		this.translationKey = TranslationUtil.getTranslationKey("setting", id);
+		this.setDefault = setDefault;
 	}
 	
-	public AbstractSetting(String id, String name)
+	public AbstractSetting(String id, String name, boolean setDefault)
 	{
 		this.id = id;
 		this.translationKey = TranslationUtil.getTranslationKey("setting", name);
+		this.setDefault = setDefault;
+		if(setDefault)
+			setDefault();
 	}
 	
 	public abstract Text getButtonText();
@@ -56,4 +61,8 @@ public abstract class AbstractSetting implements SettingsOption
 	}
 	
 	public abstract String getDefaultValue();
+	
+	public abstract void setDefault();
+	
+	public abstract void setDefault(String prefix);
 }

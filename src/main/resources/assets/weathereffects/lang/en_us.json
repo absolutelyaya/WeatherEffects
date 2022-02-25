@@ -47,6 +47,8 @@
 
   "screen.weatherEffects.options.fog.title": "Fog Options",
   "setting.weathereffects.fog.enabled": "Custom Fog",
+  "setting.weathereffects.fog.color.fade-speed": "Color Fade Speed",
+  "setting.weathereffects.fog.speed": "Fog Speed",
 
   "screen.weatherEffects.options.stars.title": "§kStar Options",
   "screen.weatherEffects.options.gamepaused": "Pause",

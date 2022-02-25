@@ -16,55 +16,73 @@ public class SliderSetting extends AbstractSetting
 	
 	private SliderSetting softMin, softMax;
 	
-	public SliderSetting(String id, double defaultValue, double min, double max, float step)
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, boolean setDefault)
 	{
-		super(id);
+		super(id, setDefault);
 		this.defaultValue = defaultValue;
 		this.min = min;
 		this.max = max;
 		this.step = step;
 		this.displayPercent = true;
 		this.decimals = 0;
-		SettingsStorage.setDouble(id, defaultValue);
+		if(setDefault)
+			setDefault();
 	}
 	
-	public SliderSetting(String id, double defaultValue, double min, double max, float step, String name)
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, String name, boolean setDefault)
 	{
-		super(id, name);
+		super(id, name, setDefault);
 		this.defaultValue = defaultValue;
 		this.min = min;
 		this.max = max;
 		this.step = step;
 		this.displayPercent = true;
 		this.decimals = 0;
+		if(setDefault)
+			setDefault();
 	}
 	
-	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals)
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals, boolean setDefault)
 	{
-		super(id);
+		super(id, setDefault);
 		this.defaultValue = defaultValue;
 		this.min = min;
 		this.max = max;
 		this.step = step;
 		this.displayPercent = decimals == 0;
 		this.decimals = decimals;
-		SettingsStorage.setDouble(id, defaultValue);
+		if(setDefault)
+			setDefault();
 	}
 	
-	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals, String name)
+	public SliderSetting(String id, double defaultValue, double min, double max, float step, int decimals, String name, boolean setDefault)
 	{
-		super(id, name);
+		super(id, name, setDefault);
 		this.defaultValue = defaultValue;
 		this.min = min;
 		this.max = max;
 		this.step = step;
 		this.displayPercent = decimals == 0;
 		this.decimals = decimals;
+		if(setDefault)
+			setDefault();
 	}
 	
 	public String getDefaultValue()
 	{
 		return Double.toString(defaultValue);
+	}
+	
+	@Override
+	public void setDefault()
+	{
+		SettingsStorage.setDouble(id, defaultValue);
+	}
+	
+	@Override
+	public void setDefault(String prefix)
+	{
+		SettingsStorage.setDouble(prefix + "." + id, defaultValue);
 	}
 	
 	@Override
@@ -111,6 +129,6 @@ public class SliderSetting extends AbstractSetting
 	@Override
 	public SettingsOption addIDPrefix(String prefix)
 	{
-		return new SliderSetting(prefix + "." + id, defaultValue, min, max, step, decimals, id);
+		return new SliderSetting(prefix + "." + id, defaultValue, min, max, step, decimals, id, setDefault);
 	}
 }

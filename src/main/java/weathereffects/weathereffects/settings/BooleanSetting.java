@@ -13,22 +13,37 @@ public class BooleanSetting extends AbstractSetting
 {
 	public final boolean defaultValue;
 	
-	public BooleanSetting(String id, boolean defaultValue)
+	public BooleanSetting(String id, boolean defaultValue, boolean setDefault)
 	{
-		super(id);
+		super(id, setDefault);
 		this.defaultValue = defaultValue;
-		SettingsStorage.setBoolean(id, defaultValue);
+		if(setDefault)
+			setDefault();
 	}
 	
-	public BooleanSetting(String id, boolean defaultValue, String name)
+	public BooleanSetting(String id, boolean defaultValue, String name, boolean setDefault)
 	{
-		super(id, name);
+		super(id, name, setDefault);
 		this.defaultValue = defaultValue;
+		if(setDefault)
+			setDefault();
 	}
 	
 	public String getDefaultValue()
 	{
 		return Boolean.toString(defaultValue);
+	}
+	
+	@Override
+	public void setDefault()
+	{
+		SettingsStorage.setBoolean(id, defaultValue);
+	}
+	
+	@Override
+	public void setDefault(String prefix)
+	{
+		SettingsStorage.setBoolean(prefix + "." + id, defaultValue);
 	}
 	
 	@Override
@@ -59,6 +74,6 @@ public class BooleanSetting extends AbstractSetting
 	@Override
 	public SettingsOption addIDPrefix(String prefix)
 	{
-		return new BooleanSetting(prefix + "." + id, defaultValue, id);
+		return new BooleanSetting(prefix + "." + id, defaultValue, id, setDefault);
 	}
 }
