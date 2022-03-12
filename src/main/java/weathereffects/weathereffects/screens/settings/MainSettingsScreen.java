@@ -1,16 +1,20 @@
 package weathereffects.weathereffects.screens.settings;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.DoubleOption;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import weathereffects.weathereffects.WeatherEffects;
 import weathereffects.weathereffects.screens.widgets.YaySliderWidget;
 import weathereffects.weathereffects.settings.Settings;
 import weathereffects.weathereffects.settings.SliderSetting;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 {
@@ -26,7 +30,8 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		if(client == null)
 			return;
 		SliderSetting particleAmount = Settings.PARTICLE_AMOUNT;
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height / 6 - 6, 150, 20, Text.of("Preset: TBA"), button -> {})).active = false;
+		Settings.PRESET.UpdateOptions(getPresets());
+		this.addDrawableChild(Settings.PRESET.asOption().createButton(client.options, this.width / 2 - 155, this.height / 6 - 6, 150));
 		this.addDrawableChild(new YaySliderWidget(client.options, this.width / 2 + 5, this.height / 6 - 6, 150, 20,
 				(DoubleOption)particleAmount.asOption(), null, null, null, 10.0));
 		
@@ -43,5 +48,21 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100,
 				this.height - (client != null && client.world != null ? 56 : 26), 200, 20,
 				ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
+	}
+	
+	private List<String> getPresets()
+	{
+		List<String> result = new ArrayList<>();
+		File[] files = new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/presets").listFiles();
+		if(files != null)
+		{
+			for (File f : files)
+			{
+				result.add(f.getName().split("\\.")[0]);
+			}
+		}
+		if(result.size() == 0)
+			result = List.of("§4ERROR");
+		return result;
 	}
 }

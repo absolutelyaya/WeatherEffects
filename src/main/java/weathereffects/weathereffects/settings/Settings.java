@@ -13,8 +13,10 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class Settings
 {
-	//TODO: Add presets
+	//TODO: Set defaults to Preset values
+	//TODO: Change values on Preset-change
 	//General
+	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true);
 	public static final SliderSetting PARTICLE_AMOUNT = new SliderSetting("general.particle-amount", 10.0, 0.0, 20.0, 0.05f, 1, true);
 	//Rain
 	public static final BooleanSetting CUSTOM_RAIN = new BooleanSetting("rain.enabled", true, true);
@@ -95,7 +97,7 @@ public class Settings
 	
 	static
 	{
-		SETTINGS.put(Category.GENERAL, List.of(PARTICLE_AMOUNT));
+		SETTINGS.put(Category.GENERAL, List.of(PRESET, PARTICLE_AMOUNT));
 		SETTINGS.put(Category.RAIN, List.of(CUSTOM_RAIN, RAINDROP_AMOUNT, RAINDROP_OPACITY, RANDOM_RAINDROP_LENGTH, RAINDROP_MIN_LENGTH,
 				RAINDROP_MAX_LENGTH, RAIN_DISTANCE_TRANSLUCENCY, RAIN_ACCELERATION, RAIN_SPLASHING, RAIN_RIPPLES, RAIN_RIPPLE_SPEED));
 		SETTINGS.put(Category.SNOW, List.of(CUSTOM_SNOW, SNOWFLAKE_AMOUNT, SNOWFLAKE_SIZE, SNOWFLAKE_ROTATION, SNOWFLAKE_GRAVITY, SNOWFLAKE_MELT_SPEED,
@@ -122,7 +124,6 @@ public class Settings
 		return options.toArray(Option[]::new);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void applyDefaults()
 	{
 		for(Category cat : Category.values())
@@ -131,14 +132,17 @@ public class Settings
 			{
 				for(AbstractSetting as : SETTINGS.get(cat))
 				{
-					if(as instanceof EnumSetting<?>)
-						SettingsStorage.setEnum(as.id, Enum.valueOf(((EnumSetting<?>)as).getEnumClass(), as.getDefaultValue()));
+					if(as instanceof ChoiceSetting)
+					{
+						int[] i = ChoiceSetting.deserialize(as.getOption());
+						SettingsStorage.setChoice(as.id, i[0], i[1]);
+					}
 					else if(as instanceof BooleanSetting)
-						SettingsStorage.setBoolean(as.id, Boolean.parseBoolean(as.getDefaultValue()));
+						SettingsStorage.setBoolean(as.id, Boolean.parseBoolean(as.getOption()));
 					else if(as instanceof SliderSetting)
-						SettingsStorage.setDouble(as.id, Double.parseDouble(as.getDefaultValue()));
+						SettingsStorage.setDouble(as.id, Double.parseDouble(as.getOption()));
 					else if(as instanceof PerEntrySetting<?>)
-						SettingsStorage.setPerEntrySetting(as.getDefaultValue());
+						SettingsStorage.setPerEntrySetting(as.getOption());
 				}
 			}
 		}
@@ -151,8 +155,8 @@ public class Settings
 		SNOW(new TranslatableText("screen.weatherEffects.options.snow.title")),
 		SANDSTORM(new TranslatableText("screen.weatherEffects.options.sandstorm.title")),
 		CLOUDS(new TranslatableText("screen.weatherEffects.options.clouds.title")),
-		FOG(new TranslatableText("screen.weatherEffects.options.fog.title")),
-		STARS(new TranslatableText("screen.weatherEffects.options.stars.title"));
+		FOG(new TranslatableText("screen.weatherEffects.options.fog.title"));
+		
 		private final TranslatableText title;
 		
 		Category(TranslatableText title)

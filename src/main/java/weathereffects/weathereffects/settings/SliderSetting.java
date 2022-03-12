@@ -68,7 +68,7 @@ public class SliderSetting extends AbstractSetting
 			setDefault();
 	}
 	
-	public String getDefaultValue()
+	public String getOption()
 	{
 		return Double.toString(defaultValue);
 	}

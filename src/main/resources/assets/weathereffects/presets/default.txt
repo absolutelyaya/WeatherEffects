@@ -1,0 +1,79 @@
+D#general.particle-amount:10.0
+B#rain.enabled:true
+D#rain.amount:1.0
+D#rain.opacity:0.75
+B#rain.random-length:true
+D#rain.min-length:0.1
+D#rain.max-length:0.3999999761581421
+B#rain.distance-translucency:true
+D#rain.acceleration:1.0250000953674316
+B#rain.splashes:true
+B#rain.ripples:true
+D#rain.ripple-speed:1.0
+B#snow.enabled:true
+D#snow.amount:1.0
+D#snow.size:1.0
+D#snow.rotation:1.0
+D#snow.gravity:1.0
+D#snow.melt-speed:1.0
+D#snow.wind.strength:1.0
+D#snow.wind.change-rate:1.0
+D#snow.wind.change-speed:1.0
+B#sandstorm.enabled:true
+D#sandstorm.dust.amount:1.0
+D#sandstorm.wind.strength:1.0
+D#sandstorm.wind.change-rate:1.0
+D#sandstorm.wind.change-speed:1.0
+B#sandstorm.wind-dust:true
+D#sandstorm.wind-dust.lifetime:1.0
+D#sandstorm.wind-dust.rot-speed:1.0
+D#sandstorm.wind-dust.gravity:1.0
+B#sandstorm.ground-dust:true
+B#clouds.enabled:true
+B#fog.enabled:true
+PES#fog.biome:45
+	TAIGA=
+		D#taiga.fog.color.fade-speed:1.0
+		D#taiga.fog.speed:1.0
+	EXTREME_HILLS=
+		D#extreme-hills.fog.color.fade-speed:1.0
+		D#extreme-hills.fog.speed:1.0
+	JUNGLE=
+		D#jungle.fog.color.fade-speed:1.0
+		D#jungle.fog.speed:1.0
+	MESA=
+		D#mesa.fog.color.fade-speed:1.0
+		D#mesa.fog.speed:1.0
+	PLAINS=
+		D#plains.fog.color.fade-speed:1.0
+		D#plains.fog.speed:1.0
+	SAVANNA=
+		D#savanna.fog.color.fade-speed:1.0
+		D#savanna.fog.speed:1.0
+	ICY=
+		D#icy.fog.color.fade-speed:1.0
+		D#icy.fog.speed:1.0
+	BEACH=
+		D#beach.fog.color.fade-speed:1.0
+		D#beach.fog.speed:1.0
+	FOREST=
+		D#forest.fog.color.fade-speed:1.0
+		D#forest.fog.speed:1.0
+	OCEAN=
+		D#ocean.fog.color.fade-speed:1.0
+		D#ocean.fog.speed:1.0
+	DESERT=
+		D#desert.fog.color.fade-speed:1.0
+		D#desert.fog.speed:1.0
+	RIVER=
+		D#river.fog.color.fade-speed:1.0
+		D#river.fog.speed:1.0
+	SWAMP=
+		D#swamp.fog.color.fade-speed:1.0
+		D#swamp.fog.speed:1.0
+	MUSHROOM=
+		D#mushroom.fog.color.fade-speed:1.0
+		D#mushroom.fog.speed:1.0
+	MOUNTAIN=
+		D#mountain.fog.color.fade-speed:1.0
+		D#mountain.fog.speed:1.0

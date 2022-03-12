@@ -1,5 +1,6 @@
 {
   "screen.weatherEffects.options.main.title": "Weather Effects Mod Options",
+  "setting.weathereffects.general.preset": "Preset",
   "setting.weathereffects.general.particle-amount": "Particle Amount",
   "setting.weathereffects.test.boolean": "Test Boolean",
   "setting.weathereffects.test.slider": "Test Slider",
@@ -50,7 +51,6 @@
   "setting.weathereffects.fog.color.fade-speed": "Color Fade Speed",
   "setting.weathereffects.fog.speed": "Fog Speed",
 
-  "screen.weatherEffects.options.stars.title": "§kStar Options",
   "screen.weatherEffects.options.gamepaused": "Pause",
   "screen.weatherEffects.options.showbg": "Background",
   "screen.weatherEffects.options.empty": "This is currently empty...",

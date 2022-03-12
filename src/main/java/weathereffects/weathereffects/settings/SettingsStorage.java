@@ -9,15 +9,13 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 public class SettingsStorage
 {
-	public static final Map<String, Enum<?>> ENUM_SETTINGS = new HashMap<>();
+	public static final Map<String, int[]> CHOICE_SETTINGS = new HashMap<>();
 	public static final Map<String, Boolean> BOOLEAN_SETTINGS = new HashMap<>();
 	public static final Map<String, Double> DOUBLE_SETTINGS = new HashMap<>();
 	
-	public static void setEnum(String id, Enum<?> value)
+	public static void setChoice(String id, int choice, int options)
 	{
-		if(value == null)
-			return;
-		ENUM_SETTINGS.put(id, value);
+		CHOICE_SETTINGS.put(id, new int[] {choice, options});
 	}
 	
 	public static void setBoolean(String id, boolean value)
@@ -43,7 +41,10 @@ public class SettingsStorage
 				String[] segments = setting.split("[#:]");
 				switch(segments[0])
 				{
-					case "E" -> setEnum(segments[1], EnumSetting.deserialize(segments[2], segments[1]));
+					case "E" ->{
+						int[] i = ChoiceSetting.deserialize(segments[2]);
+						setChoice(segments[1], i[0], i[1]);
+					}
 					case "B" -> setBoolean(segments[1], Boolean.parseBoolean(segments[2]));
 					case "D" -> setDouble(segments[1], Double.parseDouble(segments[2]));
 				}
@@ -51,10 +52,9 @@ public class SettingsStorage
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <E extends Enum<E>> E getEnum(String id, Class<E> enumClass)
+	public static int[] getChoice(String id)
 	{
-		return (E)ENUM_SETTINGS.getOrDefault(id, null);
+		return CHOICE_SETTINGS.getOrDefault(id, null);
 	}
 	
 	public static boolean getBoolean(String id)
@@ -65,13 +65,5 @@ public class SettingsStorage
 	public static double getDouble(String id)
 	{
 		return DOUBLE_SETTINGS.getOrDefault(id, 0.0);
-	}
-	
-	public static <E extends Enum<E>> E cycleEnum(String id, Class<E> typeClass) {
-		E[] values = typeClass.getEnumConstants();
-		E currentValue = getEnum(id, typeClass);
-		E newValue = values[(currentValue.ordinal() + 1) % values.length];
-		setEnum(id, newValue);
-		return newValue;
 	}
 }

@@ -60,7 +60,7 @@ public abstract class AbstractSetting implements SettingsOption
 		return null;
 	}
 	
-	public abstract String getDefaultValue();
+	public abstract String getOption();
 	
 	public abstract void setDefault();
 	

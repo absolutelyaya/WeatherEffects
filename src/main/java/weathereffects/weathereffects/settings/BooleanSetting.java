@@ -29,7 +29,7 @@ public class BooleanSetting extends AbstractSetting
 			setDefault();
 	}
 	
-	public String getDefaultValue()
+	public String getOption()
 	{
 		return Boolean.toString(defaultValue);
 	}
@@ -66,7 +66,7 @@ public class BooleanSetting extends AbstractSetting
 	@Override
 	public Option asOption()
 	{
-		return new YayCycler(translationKey,
+		return new YayCycler<>(translationKey,
 				ignored -> SettingsStorage.getBoolean(id), (ignored, option, value) -> SettingsStorage.setBoolean(id, value),
 				CyclingButtonWidget::onOffBuilder, requirements);
 	}

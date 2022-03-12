@@ -3,10 +3,18 @@ package weathereffects.weathereffects.settings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 import weathereffects.weathereffects.WeatherEffects;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class SettingsManager
@@ -17,7 +25,40 @@ public class SettingsManager
 		if (file != null) {
 			return;
 		}
-		file = new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + ".txt");
+		file = new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/settings.txt");
+		try
+		{
+			new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/presets").mkdirs();
+			file.createNewFile();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		try
+		{
+			ClassLoader cl = SettingsManager.class.getClassLoader();
+			URL resource = cl.getResource("assets/" + WeatherEffects.MODID + "/presets");
+			if(resource != null)
+			{
+				for(Path p : Files.walk(Paths.get(resource.toURI())).toList())
+				{
+					try
+					{
+						if(p.toFile().isFile())
+						{
+							Files.copy(p, FabricLoader.getInstance().getConfigDir().resolve(WeatherEffects.MODID + "/presets/" + p.getFileName()));
+						}
+					}
+					catch(FileAlreadyExistsException ignored){}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public static void load()
@@ -44,7 +85,10 @@ public class SettingsManager
 						{
 							switch (segments[0])
 							{
-								case "E" -> SettingsStorage.setEnum(segments[1], EnumSetting.deserialize(segments[2], segments[1]));
+								case "E" -> {
+									int[] ii = ChoiceSetting.deserialize(segments[2]);
+									SettingsStorage.setChoice(segments[1], ii[0], ii[1]);
+								}
 								case "B" -> SettingsStorage.setBoolean(segments[1], Boolean.parseBoolean(segments[2]));
 								case "D" -> SettingsStorage.setDouble(segments[1], Double.parseDouble(segments[2]));
 								case "PES" -> {

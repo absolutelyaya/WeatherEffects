@@ -13,16 +13,15 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class YayCycler extends Option
+public class YayCycler<E> extends Option
 {
-	private final CyclingOption.Setter<Boolean> setter;
-	private final Function<GameOptions, Boolean> getter;
-	private final Supplier<CyclingButtonWidget.Builder<Boolean>> buttonBuilderFactory;
+	private final CyclingOption.Setter<E> setter;
+	private final Function<GameOptions, E> getter;
+	private final Supplier<CyclingButtonWidget.Builder<E>> buttonBuilderFactory;
 	private final List<BooleanSetting> requirements;
+	private final Function<MinecraftClient, CyclingButtonWidget.TooltipFactory<E>> tooltips = client -> value -> ImmutableList.of();
 	
-	private Function<MinecraftClient, CyclingButtonWidget.TooltipFactory<Boolean>> tooltips = client -> value -> ImmutableList.of();
-	
-	public YayCycler(String key, Function<GameOptions, Boolean> getter, CyclingOption.Setter<Boolean> setter, Supplier<CyclingButtonWidget.Builder<Boolean>> buttonBuilderFactory, List<BooleanSetting> requirements)
+	public YayCycler(String key, Function<GameOptions, E> getter, CyclingOption.Setter<E> setter, Supplier<CyclingButtonWidget.Builder<E>> buttonBuilderFactory, List<BooleanSetting> requirements)
 	{
 		super(key);
 		this.setter = setter;
@@ -33,7 +32,7 @@ public class YayCycler extends Option
 	
 	@Override
 	public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
-		CyclingButtonWidget.TooltipFactory<Boolean> tooltipFactory = this.tooltips.apply(MinecraftClient.getInstance());
+		CyclingButtonWidget.TooltipFactory<E> tooltipFactory = this.tooltips.apply(MinecraftClient.getInstance());
 		ClickableWidget button = this.buttonBuilderFactory.get().tooltip(tooltipFactory).initially(this.getter.apply(options)).build(x, y, width, 20, this.getDisplayPrefix(), (b, value) -> {
 			this.setter.accept(options, this, value);
 			options.write();

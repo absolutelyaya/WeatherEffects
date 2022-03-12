@@ -72,7 +72,7 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 	}
 	
 	@Override
-	public String getDefaultValue()
+	public String getOption()
 	{
 		StringBuilder data = new StringBuilder();
 		for(E entry : enumClass.getEnumConstants())
@@ -82,13 +82,12 @@ public class PerEntrySetting<E extends Enum<E>> extends AbstractSetting
 				for (AbstractSetting setting : settings)
 				{
 					data.append(entry.name()).append("=").append(entry.name().toLowerCase().replace("_", "-"))
-							.append(setting.id).append(":").append(setting.getDefaultValue()).append("|");
+							.append(setting.id).append(":").append(setting.getOption()).append("|");
 				}
 				data.setCharAt(data.length() - 1, '+');
 			}
 		}
 		data.setLength(data.length() - 1);
-		System.out.println(data);
 		return data.toString();
 	}
 	
