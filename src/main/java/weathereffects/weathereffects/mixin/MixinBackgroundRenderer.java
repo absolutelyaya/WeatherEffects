@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import weathereffects.weathereffects.settings.SettingsStorage;
 
 @Mixin(BackgroundRenderer.class)
 public class MixinBackgroundRenderer
@@ -25,7 +26,6 @@ public class MixinBackgroundRenderer
 	@Inject(method = "render", at = @At("TAIL"))
 	private static void onRender(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci)
 	{
-		float colorFadeSpeed = 0.01f; ///TODO make option
 		float g;
 		Vec3d goalColor;
 		if((g = world.getRainGradient(tickDelta)) > 0)
@@ -40,7 +40,8 @@ public class MixinBackgroundRenderer
 				case SWAMP -> goalColor = new Vec3d(1f, 1f, 1f);
 				default -> goalColor = new Vec3d(0.7f, 0.82f, 1f);
 			}
-			color = color.lerp(goalColor.multiply(g).add(new Vec3d(1 - g, 1 - g, 1 - g)), colorFadeSpeed * tickDelta);
+			color = color.lerp(goalColor.multiply(g).add(new Vec3d(1 - g, 1 - g, 1 - g)),
+					tickDelta * 0.01f * SettingsStorage.getDouble("fog.color.fade-speed"));
 			red *= color.x;
 			green *= color.y;
 			blue *= color.z;

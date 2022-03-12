@@ -7,7 +7,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 

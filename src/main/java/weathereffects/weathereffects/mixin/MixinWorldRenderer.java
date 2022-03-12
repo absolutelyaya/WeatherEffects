@@ -157,7 +157,6 @@ public abstract class MixinWorldRenderer
 	@Unique
 	public void applyFogSettings(Biome.Category biomeCategory, Camera camera, float tickDelta, GameRenderer gameRenderer)
 	{
-		float fogSpeed = 0.01f; ///TODO make option
 		if(fogDistance == -1)
 			fogDistance = RenderSystem.getShaderFogStart();
 		if(fogEndDistance == -1)
@@ -168,6 +167,7 @@ public abstract class MixinWorldRenderer
 		if(cameraSubmersionType.equals(CameraSubmersionType.NONE) &&
 				   (entity instanceof LivingEntity && !((LivingEntity)entity).hasStatusEffect(StatusEffects.BLINDNESS)))
 		{
+			float fogSpeed = (float)SettingsStorage.getDouble(biomeCategory.getName().toLowerCase().replace("_", "-") + ".fog.speed");
 			float g = world.getRainGradient(tickDelta);
 			if (g > 0f && !(g < 1f && isRaining))
 			{
@@ -176,15 +176,15 @@ public abstract class MixinWorldRenderer
 				switch(biomeCategory)
 				{
 					case DESERT, MESA -> {
-						fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, 16f);
-						fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, 64f);
+						fogDistance = MathHelper.lerp(tickDelta * 0.01f * fogSpeed, fogDistance, 16f);
+						fogEndDistance = MathHelper.lerp(tickDelta * 0.01f * fogSpeed, fogEndDistance, 64f);
 						RenderSystem.setShaderFogStart(fogDistance);
 						RenderSystem.setShaderFogEnd(fogEndDistance);
 						return;
 					}
 					case SWAMP -> {
-						fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, 4f);
-						fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, 96f);
+						fogDistance = MathHelper.lerp(tickDelta * 0.01f * fogSpeed, fogDistance, 4f);
+						fogEndDistance = MathHelper.lerp(tickDelta * 0.01f * fogSpeed, fogEndDistance, 96f);
 						RenderSystem.setShaderFogStart(fogDistance);
 						RenderSystem.setShaderFogEnd(fogEndDistance);
 						return;
