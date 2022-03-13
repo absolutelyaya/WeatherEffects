@@ -73,7 +73,7 @@ public class SettingsManager
 	{
 		try
 		{
-			if(!file.exists())
+			if(!SettingsManager.file.exists())
 				save();
 			if(file.exists())
 			{

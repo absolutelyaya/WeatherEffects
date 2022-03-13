@@ -14,31 +14,32 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class YaySlider extends DoubleOption
 {
 	private final Function<MinecraftClient, List<OrderedText>> tooltipsGetter;
 	private final List<BooleanSetting> requirements;
 	private final SliderSetting softMin, softMax;
-	private final double defaultValue;
+	private final Supplier<Double> defaultSupplier;
 	
 	public YaySlider(String key, double min, double max, float step, Function<GameOptions, Double> getter,
 					 BiConsumer<GameOptions, Double> setter, List<BooleanSetting> requirements,
 					 BiFunction<GameOptions, DoubleOption, Text> displayStringGetter, SliderSetting softMin,
-					 SliderSetting softMax, double defaultValue)
+					 SliderSetting softMax, Supplier<Double> defaultSupplier)
 	{
 		super(key, min, max, step, getter, setter, displayStringGetter);
 		this.requirements = requirements;
 		this.tooltipsGetter = client -> ImmutableList.of();
 		this.softMin = softMin;
 		this.softMax = softMax;
-		this.defaultValue = defaultValue;
+		this.defaultSupplier = defaultSupplier;
 	}
 	
 	@Override
 	public ClickableWidget createButton(GameOptions options, int x, int y, int width) {
 		List<OrderedText> list = tooltipsGetter.apply(MinecraftClient.getInstance());
-		ClickableWidget slider = new YaySliderWidget(options, x, y, width, 20, this, list, softMin, softMax, defaultValue);
+		ClickableWidget slider = new YaySliderWidget(options, x, y, width, 20, this, list, softMin, softMax, defaultSupplier);
 		((ClickableWidgetAccessor)slider).setRequirements(requirements);
 		return slider;
 	}

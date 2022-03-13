@@ -35,7 +35,7 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		Settings.PRESET.UpdateOptions(getPresets());
 		this.addDrawableChild(Settings.PRESET.asOption().createButton(client.options, this.width / 2 - 155, this.height / 6 - 6, 150));
 		particlesWidget = new YaySliderWidget(client.options, this.width / 2 + 5, this.height / 6 - 6, 150, 20,
-				(DoubleOption)particleAmount.asOption(), null, null, null, 10.0);
+				(DoubleOption)particleAmount.asOption(), null, null, null, () -> particleAmount.defaultValue);
 		this.addDrawableChild(particlesWidget);
 		
 		for (int i = 1; i < Settings.Category.values().length; i++)
@@ -71,6 +71,7 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 	
 	public void UpdateSlider()
 	{
-		particlesWidget.refresh(Settings.PARTICLE_AMOUNT.id);
+		if(particlesWidget != null)
+			particlesWidget.refresh(Settings.PARTICLE_AMOUNT.id);
 	}
 }

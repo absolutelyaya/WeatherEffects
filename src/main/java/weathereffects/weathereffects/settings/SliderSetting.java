@@ -9,7 +9,9 @@ import net.minecraft.text.TranslatableText;
 @Environment(EnvType.CLIENT)
 public class SliderSetting extends AbstractSetting
 {
-	public final double defaultValue, min, max;
+	public double defaultValue;
+	
+	public final double min, max;
 	public final float step;
 	public final boolean displayPercent;
 	public final int decimals;
@@ -68,6 +70,11 @@ public class SliderSetting extends AbstractSetting
 			setDefault();
 	}
 	
+	public void updateDefault(double d)
+	{
+		defaultValue = d;
+	}
+	
 	public String getOption()
 	{
 		return Double.toString(defaultValue);
@@ -109,7 +116,7 @@ public class SliderSetting extends AbstractSetting
 	public Option asOption()
 	{
 		return new YaySlider(translationKey, min, max, step, options -> SettingsStorage.getDouble(id),
-				(options, value) -> SettingsStorage.setDouble(id, value), requirements, (a, b) -> getButtonText(), softMin, softMax, defaultValue);
+				(options, value) -> SettingsStorage.setDouble(id, value), requirements, (a, b) -> getButtonText(), softMin, softMax, () -> defaultValue);
 	}
 	
 	@Override

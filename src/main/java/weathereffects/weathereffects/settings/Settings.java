@@ -19,10 +19,8 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class Settings
 {
-	//TODO: Set defaults to Preset values
+	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	//General
-	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true)
-			.setChangeConsumer(Settings::applyPreset);
 	public static final SliderSetting PARTICLE_AMOUNT = new SliderSetting("general.particle-amount", 10.0, 0.0, 20.0, 0.05f, 1, true);
 	//Rain
 	public static final BooleanSetting CUSTOM_RAIN = new BooleanSetting("rain.enabled", true, true);
@@ -99,7 +97,9 @@ public class Settings
 			List.of(Biome.Category.THEEND, Biome.Category.NONE, Biome.Category.NETHER, Biome.Category.UNDERGROUND))
 			.setRequirements(List.of(FOG));
 	
-	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
+	//Peset
+	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true)
+			.setChangeConsumer(Settings::applyPreset);
 	
 	static
 	{
@@ -125,6 +125,19 @@ public class Settings
 		Screen screen = MinecraftClient.getInstance().currentScreen;
 		if(screen instanceof MainSettingsScreen)
 			((MainSettingsScreen)screen).UpdateSlider();
+		for(Category cat : Category.values())
+		{
+			if(SETTINGS.get(cat) != null)
+			{
+				for(AbstractSetting as : SETTINGS.get(cat))
+				{
+					if(as instanceof BooleanSetting bool)
+						bool.defaultValue = SettingsStorage.getBoolean(bool.id);
+					else if(as instanceof SliderSetting slider)
+						slider.updateDefault(SettingsStorage.getDouble(slider.id));
+				}
+			}
+		}
 	}
 	
 	public static Option[] getAsOptions(Category category)

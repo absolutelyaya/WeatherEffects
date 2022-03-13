@@ -36,6 +36,7 @@ public class ChoiceSetting extends AbstractSetting
 	public ChoiceSetting setChangeConsumer(Consumer<String> consume)
 	{
 		onChange = consume;
+		onChange.accept(getSelectedOptionName());
 		return this;
 	}
 	
@@ -43,6 +44,8 @@ public class ChoiceSetting extends AbstractSetting
 	{
 		this.options = options;
 		SettingsStorage.setChoice(id, Math.min(SettingsStorage.getChoice(id)[0], options.size()), options.size());
+		if(onChange != null)
+			onChange.accept(getSelectedOptionName());
 	}
 	
 	@Override

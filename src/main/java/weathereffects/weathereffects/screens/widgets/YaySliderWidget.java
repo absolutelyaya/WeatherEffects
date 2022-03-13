@@ -18,23 +18,24 @@ import weathereffects.weathereffects.settings.SliderSetting;
 import weathereffects.weathereffects.settings.YaySlider;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class YaySliderWidget extends DoubleOptionSliderWidget
 {
 	private final DoubleOption option;
 	private final SliderSetting softMin, softMax;
-	private final double defaultValue;
+	private final Supplier<Double> defaultSupplier;
 	
 	private float popupOpacity;
 	private Text popupMessage;
 	
-	public YaySliderWidget(GameOptions gameOptions, int x, int y, int width, int height, DoubleOption option, List<OrderedText> orderedTooltip, SliderSetting softMin, SliderSetting softMax, double defaultValue)
+	public YaySliderWidget(GameOptions gameOptions, int x, int y, int width, int height, DoubleOption option, List<OrderedText> orderedTooltip, SliderSetting softMin, SliderSetting softMax, Supplier<Double> defaultSupplier)
 	{
 		super(gameOptions, x, y, width, height, option, orderedTooltip);
 		this.option = option;
 		this.softMin = softMin;
 		this.softMax = softMax;
-		this.defaultValue = defaultValue;
+		this.defaultSupplier = defaultSupplier;
 	}
 	
 	public void refresh(String id)
@@ -87,7 +88,7 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 	
 	void reset()
 	{
-		this.value = (defaultValue - option.getMin()) / (option.getMax() - option.getMin());
+		this.value = (defaultSupplier.get() - option.getMin()) / (option.getMax() - option.getMin());
 		applyValue();
 		updateMessage();
 		onRelease(0, 0);

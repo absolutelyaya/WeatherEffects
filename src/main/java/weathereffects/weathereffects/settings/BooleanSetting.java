@@ -11,7 +11,7 @@ import net.minecraft.text.TranslatableText;
 @Environment(EnvType.CLIENT)
 public class BooleanSetting extends AbstractSetting
 {
-	public final boolean defaultValue;
+	public boolean defaultValue;
 	
 	public BooleanSetting(String id, boolean defaultValue, boolean setDefault)
 	{
