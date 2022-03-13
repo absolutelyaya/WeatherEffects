@@ -2,10 +2,16 @@ package weathereffects.weathereffects.settings;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.Option;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.biome.Biome;
+import weathereffects.weathereffects.WeatherEffects;
+import weathereffects.weathereffects.screens.settings.MainSettingsScreen;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +20,9 @@ import java.util.List;
 public class Settings
 {
 	//TODO: Set defaults to Preset values
-	//TODO: Change values on Preset-change
 	//General
-	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true);
+	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true)
+			.setChangeConsumer(Settings::applyPreset);
 	public static final SliderSetting PARTICLE_AMOUNT = new SliderSetting("general.particle-amount", 10.0, 0.0, 20.0, 0.05f, 1, true);
 	//Rain
 	public static final BooleanSetting CUSTOM_RAIN = new BooleanSetting("rain.enabled", true, true);
@@ -110,6 +116,15 @@ public class Settings
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);
+	}
+	
+	public static void applyPreset(String name)
+	{
+		SettingsManager.load(new File(FabricLoader.getInstance().getConfigDir().toFile(),
+				WeatherEffects.MODID + "/presets/" + name + ".txt"));
+		Screen screen = MinecraftClient.getInstance().currentScreen;
+		if(screen instanceof MainSettingsScreen)
+			((MainSettingsScreen)screen).UpdateSlider();
 	}
 	
 	public static Option[] getAsOptions(Category category)

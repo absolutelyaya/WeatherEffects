@@ -38,6 +38,7 @@ public abstract class AbstractSetting implements SettingsOption
 	
 	public abstract String serialize(String prefix);
 	
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractSetting>T setRequirements(List<BooleanSetting> bools)
 	{
 		for(BooleanSetting bool : bools)

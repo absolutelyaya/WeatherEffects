@@ -21,8 +21,10 @@ public class SettingsManager
 {
 	private static File file;
 	
-	private static void prepareConfigFile() {
-		if (file != null) {
+	private static void prepareConfigFile()
+	{
+		if (file != null)
+		{
 			return;
 		}
 		file = new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/settings.txt");
@@ -64,9 +66,11 @@ public class SettingsManager
 	public static void load()
 	{
 		prepareConfigFile();
-		
-		Settings.applyDefaults();
-		
+		load(file);
+	}
+	
+	public static void load(File file)
+	{
 		try
 		{
 			if(!file.exists())
@@ -110,8 +114,9 @@ public class SettingsManager
 		}
 		catch (Exception e)
 		{
-			System.err.println("Failed to load Weather Effects settings file. Reverting to defaults");
+			System.err.println("Failed to load Weather Effects settings.");
 			e.printStackTrace();
+			Settings.applyDefaults();
 		}
 	}
 	

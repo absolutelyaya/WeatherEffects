@@ -9,11 +9,13 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
 public class ChoiceSetting extends AbstractSetting
 {
 	private List<String> options;
+	Consumer<String> onChange;
 	
 	public ChoiceSetting(String id, List<String> options, boolean setDefault)
 	{
@@ -31,6 +33,12 @@ public class ChoiceSetting extends AbstractSetting
 			setDefault();
 	}
 	
+	public ChoiceSetting setChangeConsumer(Consumer<String> consume)
+	{
+		onChange = consume;
+		return this;
+	}
+	
 	public void UpdateOptions(List<String> options)
 	{
 		this.options = options;
@@ -45,6 +53,11 @@ public class ChoiceSetting extends AbstractSetting
 	
 	public String getOption() {
 		return 0 + "/" + options.size();
+	}
+	
+	public String getSelectedOptionName()
+	{
+		return options.get(SettingsStorage.getChoice(id)[0]);
 	}
 	
 	@Override
@@ -80,7 +93,12 @@ public class ChoiceSetting extends AbstractSetting
 	{
 		return new YayCycler<>(translationKey,
 				ignored -> SettingsStorage.getChoice(id)[0],
-				(ignored, option, value) -> SettingsStorage.setChoice(id, value, options.size()),
+				(ignored, option, value) ->
+				{
+					SettingsStorage.setChoice(id, value, options.size());
+					if(onChange != null)
+						onChange.accept(getSelectedOptionName());
+				},
 				this::choiceBuilder, requirements);
 	}
 	

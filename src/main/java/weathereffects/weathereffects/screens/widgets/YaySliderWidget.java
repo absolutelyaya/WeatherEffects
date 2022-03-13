@@ -37,6 +37,14 @@ public class YaySliderWidget extends DoubleOptionSliderWidget
 		this.defaultValue = defaultValue;
 	}
 	
+	public void refresh(String id)
+	{
+		double val =  SettingsStorage.getDouble(id);
+		this.value = (val - option.getMin()) / (option.getMax() - option.getMin());
+		applyValue();
+		updateMessage();
+	}
+	
 	@Override
 	protected void applyValue()
 	{

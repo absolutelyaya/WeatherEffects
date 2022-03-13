@@ -18,6 +18,8 @@ import java.util.List;
 
 public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 {
+	YaySliderWidget particlesWidget;
+	
 	public MainSettingsScreen(Screen parent)
 	{
 		super(new TranslatableText("screen.weatherEffects.options.main.title"), parent);
@@ -32,8 +34,9 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		SliderSetting particleAmount = Settings.PARTICLE_AMOUNT;
 		Settings.PRESET.UpdateOptions(getPresets());
 		this.addDrawableChild(Settings.PRESET.asOption().createButton(client.options, this.width / 2 - 155, this.height / 6 - 6, 150));
-		this.addDrawableChild(new YaySliderWidget(client.options, this.width / 2 + 5, this.height / 6 - 6, 150, 20,
-				(DoubleOption)particleAmount.asOption(), null, null, null, 10.0));
+		particlesWidget = new YaySliderWidget(client.options, this.width / 2 + 5, this.height / 6 - 6, 150, 20,
+				(DoubleOption)particleAmount.asOption(), null, null, null, 10.0);
+		this.addDrawableChild(particlesWidget);
 		
 		for (int i = 1; i < Settings.Category.values().length; i++)
 		{
@@ -64,5 +67,10 @@ public class MainSettingsScreen extends AbstractWeatherSettingsScreen
 		if(result.size() == 0)
 			result = List.of("§4ERROR");
 		return result;
+	}
+	
+	public void UpdateSlider()
+	{
+		particlesWidget.refresh(Settings.PARTICLE_AMOUNT.id);
 	}
 }
