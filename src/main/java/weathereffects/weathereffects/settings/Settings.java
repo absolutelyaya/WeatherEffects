@@ -120,8 +120,11 @@ public class Settings
 	
 	public static void applyPreset(String name)
 	{
+		if(name.equals("custom") || name.equals("§4ERROR"))
+			return;
+		String[] segments = name.split("\\|");
 		SettingsManager.load(new File(FabricLoader.getInstance().getConfigDir().toFile(),
-				WeatherEffects.MODID + "/presets/" + name + ".txt"));
+				WeatherEffects.MODID + "/presets/" + segments[0] + ".txt"));
 		Screen screen = MinecraftClient.getInstance().currentScreen;
 		if(screen instanceof MainSettingsScreen)
 			((MainSettingsScreen)screen).UpdateSlider();
@@ -138,6 +141,8 @@ public class Settings
 				}
 			}
 		}
+		if(!Boolean.parseBoolean(segments[1]))
+			SettingsManager.load();
 	}
 	
 	public static Option[] getAsOptions(Category category)

@@ -36,8 +36,19 @@ public class ChoiceSetting extends AbstractSetting
 	public ChoiceSetting setChangeConsumer(Consumer<String> consume)
 	{
 		onChange = consume;
-		onChange.accept(getSelectedOptionName());
+		onChange.accept(getSelectedOptionName() + "|false");
 		return this;
+	}
+	
+	public void setValueTo(String value)
+	{
+		int i = options.indexOf(value);
+		if(i != -1)
+		{
+			SettingsStorage.setChoice(id, i, options.size());
+			if(onChange != null)
+				onChange.accept(getSelectedOptionName() + "|True");
+		}
 	}
 	
 	public void UpdateOptions(List<String> options)
@@ -45,7 +56,7 @@ public class ChoiceSetting extends AbstractSetting
 		this.options = options;
 		SettingsStorage.setChoice(id, Math.min(SettingsStorage.getChoice(id)[0], options.size()), options.size());
 		if(onChange != null)
-			onChange.accept(getSelectedOptionName());
+			onChange.accept(getSelectedOptionName() + "|false");
 	}
 	
 	@Override
@@ -100,7 +111,7 @@ public class ChoiceSetting extends AbstractSetting
 				{
 					SettingsStorage.setChoice(id, value, options.size());
 					if(onChange != null)
-						onChange.accept(getSelectedOptionName());
+						onChange.accept(getSelectedOptionName() + "|True");
 				},
 				this::choiceBuilder, requirements);
 	}

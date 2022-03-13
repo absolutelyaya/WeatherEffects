@@ -20,11 +20,15 @@ public class SettingsStorage
 	
 	public static void setBoolean(String id, boolean value)
 	{
+		if(Settings.PRESET != null)
+			Settings.PRESET.setValueTo("custom");
 		BOOLEAN_SETTINGS.put(id, value);
 	}
 	
 	public static void setDouble(String id, double value)
 	{
+		if(Settings.PRESET != null)
+			Settings.PRESET.setValueTo("custom");
 		DOUBLE_SETTINGS.put(id, value);
 	}
 	
