@@ -6,6 +6,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,6 +27,8 @@ public class MixinBackgroundRenderer
 	@Inject(method = "render", at = @At("TAIL"))
 	private static void onRender(Camera camera, float tickDelta, ClientWorld world, int i, float f, CallbackInfo ci)
 	{
+		if(!SettingsStorage.getBoolean("fog.enabled"))
+			return;
 		float g;
 		Vec3d goalColor;
 		if((g = world.getRainGradient(tickDelta)) > 0)
@@ -33,15 +36,17 @@ public class MixinBackgroundRenderer
 			if(color == null)
 				color = new Vec3d(0.7f, 0.82f, 1f);
 			Vec3d pos = camera.getPos();
-			switch(world.getBiome(new BlockPos(pos)).getCategory())
+			Biome.Category biomeCategory = world.getBiome(new BlockPos(pos)).getCategory();
+			switch(biomeCategory)
 			{
 				case DESERT -> goalColor = new Vec3d(2f, 1.6f, 0.8f);
 				case MESA -> goalColor = new Vec3d(1.36f, 0.8f, 0.52f);
 				case SWAMP -> goalColor = new Vec3d(1f, 1f, 1f);
 				default -> goalColor = new Vec3d(0.7f, 0.82f, 1f);
 			}
+			float colorSpeed = (float)SettingsStorage.getDouble(biomeCategory.getName().toLowerCase().replace("_", "-") + ".fog.speed");
 			color = color.lerp(goalColor.multiply(g).add(new Vec3d(1 - g, 1 - g, 1 - g)),
-					tickDelta * 0.01f * SettingsStorage.getDouble("fog.color.fade-speed"));
+					tickDelta * 0.01f * colorSpeed);
 			red *= color.x;
 			green *= color.y;
 			blue *= color.z;

@@ -148,6 +148,8 @@ public abstract class MixinWorldRenderer
 			shift = At.Shift.AFTER))
 	public void onRenderFog(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, CallbackInfo ci)
 	{
+		if(!SettingsStorage.getBoolean("fog.enabled"))
+			return;
 		Profiler profiler = this.world.getProfiler();
 		profiler.swap("fog");
 		Vec3d pos = camera.getPos();
@@ -194,8 +196,8 @@ public abstract class MixinWorldRenderer
 			else if(g == 0 && isRaining)
 				isRaining = false;
 			float b = MathHelper.clamp(viewDistance / 10.0f, 4.0f, 64.0f);
-			fogDistance = MathHelper.lerp(fogSpeed * tickDelta, fogDistance, Math.max(viewDistance, 32.0f) - b);
-			fogEndDistance = MathHelper.lerp(fogSpeed * tickDelta, fogEndDistance, Math.max(viewDistance, 32.0f));
+			fogDistance = MathHelper.lerp(fogSpeed * 0.04f * tickDelta, fogDistance, Math.max(viewDistance, 32.0f) - b);
+			fogEndDistance = MathHelper.lerp(fogSpeed * 0.04f * tickDelta, fogEndDistance, Math.max(viewDistance, 32.0f));
 			RenderSystem.setShaderFogStart(fogDistance);
 			RenderSystem.setShaderFogEnd(fogEndDistance);
 		}
