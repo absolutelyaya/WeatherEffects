@@ -21,19 +21,8 @@ public class SettingsManager
 	private static void prepareConfigFile()
 	{
 		if (file != null)
-		{
 			return;
-		}
 		file = new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/settings.txt");
-		try
-		{
-			new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/presets").mkdirs();
-			file.createNewFile();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
 		
 		try
 		{
@@ -53,6 +42,9 @@ public class SettingsManager
 					catch(FileAlreadyExistsException ignored){}
 				}
 			}
+			
+			new File(FabricLoader.getInstance().getConfigDir().toFile(), WeatherEffects.MODID + "/presets").mkdirs();
+			Files.copy(FabricLoader.getInstance().getConfigDir().resolve(WeatherEffects.MODID + "/presets/default.txt"), file.toPath());
 		}
 		catch(Exception e)
 		{
