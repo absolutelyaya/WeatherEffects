@@ -2,6 +2,7 @@ package de.yaya.weathereffects.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.yaya.weathereffects.WeatherEffects;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -27,7 +28,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import de.yaya.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
 

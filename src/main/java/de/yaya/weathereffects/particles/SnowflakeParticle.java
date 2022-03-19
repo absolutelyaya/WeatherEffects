@@ -1,6 +1,7 @@
 package de.yaya.weathereffects.particles;
 
 import de.yaya.weathereffects.WeatherEffects;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
@@ -14,7 +15,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
-import de.yaya.weathereffects.settings.SettingsStorage;
 
 import java.util.Random;
 
@@ -26,7 +26,7 @@ public class SnowflakeParticle extends SpriteBillboardParticle
 	protected SnowflakeParticle(ClientWorld world, double x, double y, double z)
 	{
 		super(world, x, y, z);
-		gravityStrength = 0.1f * (float)SettingsStorage.getDouble("snow.gravity");
+		gravityStrength = 0.1f * (float) SettingsStorage.getDouble("snow.gravity");
 		startScale = scale * (float)SettingsStorage.getDouble("snow.size");
 		meltSpeed = (float)SettingsStorage.getDouble("snow.melt-speed");
 	}

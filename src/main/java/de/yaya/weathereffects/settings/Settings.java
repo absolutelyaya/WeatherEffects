@@ -1,25 +1,29 @@
 package de.yaya.weathereffects.settings;
 
 import de.yaya.weathereffects.WeatherEffects;
+import de.yaya.weathereffects.screens.MainSettingsScreen;
+import de.yaya.yayconfig.settings.AbstractSetting;
+import de.yaya.yayconfig.settings.BooleanSetting;
+import de.yaya.yayconfig.settings.ChoiceSetting;
+import de.yaya.yayconfig.settings.PerEntrySetting;
+import de.yaya.yayconfig.settings.SettingsCategory;
+import de.yaya.yayconfig.settings.SettingsManager;
+import de.yaya.yayconfig.settings.SettingsStorage;
+import de.yaya.yayconfig.settings.SliderSetting;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.Option;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.biome.Biome;
-import de.yaya.weathereffects.screens.settings.MainSettingsScreen;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class Settings
+public class Settings extends de.yaya.yayconfig.settings.Settings
 {
-	static final HashMap<Category, List<AbstractSetting>> SETTINGS = new HashMap<>();
 	//General
 	public static final SliderSetting PARTICLE_AMOUNT = new SliderSetting("general.particle-amount", 10.0, 0.0, 20.0, 0.05f, 1, true);
 	//Rain
@@ -98,8 +102,7 @@ public class Settings
 			.setRequirements(List.of(FOG));
 	
 	//Peset
-	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true)
-			.setChangeConsumer(Settings::applyPreset);
+	public static final ChoiceSetting PRESET = new ChoiceSetting("general.preset", List.of("a", "b", "c", "d"), true);
 	
 	static
 	{
@@ -116,6 +119,13 @@ public class Settings
 		
 		RAINDROP_MIN_LENGTH.setSoftMax(RAINDROP_MAX_LENGTH);
 		RAINDROP_MAX_LENGTH.setSoftMin(RAINDROP_MIN_LENGTH);
+	}
+	
+	public Settings(Class<? extends SettingsCategory> category)
+	{
+		super(category);
+		Settings.category = category;
+		PRESET.setChangeConsumer(Settings::applyPreset);
 	}
 	
 	public static void applyPreset(String name)
@@ -145,43 +155,7 @@ public class Settings
 			SettingsManager.load();
 	}
 	
-	public static Option[] getAsOptions(Category category)
-	{
-		if(SETTINGS.get(category) == null)
-			return new Option[0];
-		List<Option> options = new ArrayList<>();
-		for (SettingsOption so : SETTINGS.get(category))
-		{
-			options.add(so.asOption());
-		}
-		return options.toArray(Option[]::new);
-	}
-	
-	public static void applyDefaults()
-	{
-		for(Category cat : Category.values())
-		{
-			if(SETTINGS.get(cat) != null)
-			{
-				for(AbstractSetting as : SETTINGS.get(cat))
-				{
-					if(as instanceof ChoiceSetting)
-					{
-						int[] i = ChoiceSetting.deserialize(as.getOption());
-						SettingsStorage.setChoice(as.id, i[0], i[1]);
-					}
-					else if(as instanceof BooleanSetting)
-						SettingsStorage.setBoolean(as.id, Boolean.parseBoolean(as.getOption()));
-					else if(as instanceof SliderSetting)
-						SettingsStorage.setDouble(as.id, Double.parseDouble(as.getOption()));
-					else if(as instanceof PerEntrySetting<?>)
-						SettingsStorage.setPerEntrySetting(as.getOption());
-				}
-			}
-		}
-	}
-	
-	public enum Category
+	public enum Category implements de.yaya.yayconfig.settings.SettingsCategory
 	{
 		GENERAL(new TranslatableText("screen.weatherEffects.options.main.title")),
 		RAIN(new TranslatableText("screen.weatherEffects.options.rain.title")),
@@ -200,6 +174,12 @@ public class Settings
 		public TranslatableText getTitle()
 		{
 			return title.copy();
+		}
+		
+		@Override
+		public SettingsCategory[] getValues()
+		{
+			return values();
 		}
 	}
 }

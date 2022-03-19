@@ -1,15 +1,17 @@
-package de.yaya.weathereffects.screens.settings;
+package de.yaya.weathereffects.screens;
 
 import de.yaya.weathereffects.WeatherEffects;
 import de.yaya.weathereffects.settings.Settings;
-import de.yaya.weathereffects.settings.SliderSetting;
+import de.yaya.yayconfig.screens.settings.AbstractWeatherSettingsScreen;
+import de.yaya.yayconfig.screens.settings.SettingsScreen;
+import de.yaya.yayconfig.screens.widgets.YaySliderWidget;
+import de.yaya.yayconfig.settings.SliderSetting;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.DoubleOption;
 import net.minecraft.text.TranslatableText;
-import de.yaya.weathereffects.screens.widgets.YaySliderWidget;
 
 import java.io.File;
 import java.util.ArrayList;

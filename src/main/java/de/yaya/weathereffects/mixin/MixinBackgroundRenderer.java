@@ -1,7 +1,7 @@
 package de.yaya.weathereffects.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import de.yaya.weathereffects.settings.SettingsStorage;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.world.ClientWorld;

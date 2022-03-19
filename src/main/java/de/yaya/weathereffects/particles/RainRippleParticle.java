@@ -1,6 +1,6 @@
 package de.yaya.weathereffects.particles;
 
-import de.yaya.weathereffects.settings.SettingsStorage;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;

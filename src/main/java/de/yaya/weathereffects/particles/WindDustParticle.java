@@ -1,6 +1,6 @@
 package de.yaya.weathereffects.particles;
 
-import de.yaya.weathereffects.settings.SettingsStorage;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -23,7 +23,7 @@ public class WindDustParticle extends SpriteBillboardParticle
 		super(clientWorld, d, e, f);
 		this.spriteProvider = spriteProvider;
 		this.rotationSpeed = ((float)Math.random() - 0.5f) * 0.1f * (float) SettingsStorage.getDouble("sandstorm.wind-dust.rot-speed");
-		this.gravityStrength = 0.1f * (float)SettingsStorage.getDouble("sandstorm.wind-dust.gravity");
+		this.gravityStrength = 0.1f * (float) SettingsStorage.getDouble("sandstorm.wind-dust.gravity");
 	}
 	
 	@Override

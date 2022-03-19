@@ -1,6 +1,7 @@
 package de.yaya.weathereffects.particles;
 
 import de.yaya.weathereffects.WeatherEffects;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -17,7 +18,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import org.jetbrains.annotations.Nullable;
-import de.yaya.weathereffects.settings.SettingsStorage;
 
 public class RainDropParticle extends SpriteAAParticle
 {

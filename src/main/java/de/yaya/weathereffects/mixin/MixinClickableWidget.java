@@ -1,5 +1,8 @@
 package de.yaya.weathereffects.mixin;
 
+import de.yaya.yayconfig.accessors.ClickableWidgetAccessor;
+import de.yaya.yayconfig.settings.BooleanSetting;
+import de.yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,9 +11,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import de.yaya.weathereffects.accessors.ClickableWidgetAccessor;
-import de.yaya.weathereffects.settings.BooleanSetting;
-import de.yaya.weathereffects.settings.SettingsStorage;
 
 import java.util.List;
 

@@ -29,6 +29,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "com.terraformersmc:modmenu:3.0.1"
+
+    modImplementation files("libs/yayConfigLib-1.0-SNAPSHOT.jar")
+    include files("libs/yayConfigLib-1.0-SNAPSHOT.jar")
 }
 
 processResources {
