@@ -1,12 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "weathereffects.weathereffects.mixin",
+  "package": "de.yaya.weathereffects.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MixinBackgroundRenderer",
-    "MixinClickableWidget",
-    "MixinWorldRenderer"
+    "MixinWorldRenderer",
+    "MixinClickableWidget"
   ],
   "client": [
   ],

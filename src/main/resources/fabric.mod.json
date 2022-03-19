@@ -13,13 +13,13 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "weathereffects.weathereffects.client.WeatherEffectsClient"
+      "de.yaya.weathereffects.client.WeatherEffectsClient"
     ],
     "main": [
-      "weathereffects.weathereffects.WeatherEffects"
+      "de.yaya.weathereffects.WeatherEffects"
     ],
     "modmenu": [
-      "weathereffects.weathereffects.settings.ModMenu"
+      "de.yaya.weathereffects.settings.ModMenu"
     ]
   },
   "mixins": [
